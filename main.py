@@ -1,7 +1,7 @@
 import os
 import gymnasium as gym
 import numpy as np
-from rl.core import Processor
+from processor import Processor
 from PIL import Image
 import tensorflow as tf
 from comet_ml import Experiment
@@ -49,32 +49,32 @@ class ImageProcessor(Processor):
 
 def build_model(input_shape, actions=6):
     model = tf.python.keras.models.Sequential()
-    model.add(tf.keras.layers.Permute(2, 3, 1), input_shape)
+    model.add(tf.python.keras.layers.Permute(2, 3, 1), input_shape)
     # strides are how the image is broken up as scanned
     # bigger strides = less reolution, but faster
     # Convolution = image proc, understnading - convolution is tricky
-    model.add(tf.keras.layers.Convolution2D(32, (8, 8), strides=(4, 4), kernal_initializer="he_normal"))
-    model.add(tf.keras.layers.Activation("relu"))
+    model.add(tf.python.keras.layers.Convolution2D(32, (8, 8), strides=(4, 4), kernal_initializer="he_normal"))
+    model.add(tf.python.keras.layers.Activation("relu"))
     # repeat
-    model.add(tf.keras.layers.Convolution2D(64, (8, 8), strides=(2, 2), kernal_initializer="he_normal"))
-    model.add(tf.keras.layers.Activation("relu"))
+    model.add(tf.python.keras.layers.Convolution2D(64, (8, 8), strides=(2, 2), kernal_initializer="he_normal"))
+    model.add(tf.python.keras.layers.Activation("relu"))
     # repeat
-    model.add(tf.keras.layers.Convolution2D(64, (8, 8), strides=(1, 1), kernal_initializer="he_normal"))
-    model.add(tf.keras.layers.Activation("relu"))
+    model.add(tf.python.keras.layers.Convolution2D(64, (8, 8), strides=(1, 1), kernal_initializer="he_normal"))
+    model.add(tf.python.keras.layers.Activation("relu"))
     # reduce dimensionality
     # Dense layers make decisions
-    model.add(tf.keras.layers.Flatten())
+    model.add(tf.python.keras.layers.Flatten())
     # 512 neurons
-    model.add(tf.keras.layers.Dense(512))
-    model.add(tf.keras.layers.Activation("relu"))
+    model.add(tf.python.keras.layers.Dense(512))
+    model.add(tf.python.keras.layers.Activation("relu"))
     # multiple layers = more complex relationships, better to have a big model and scale down ig
-    model.add(tf.keras.layers.Dense(1024))
-    model.add(tf.keras.layers.Activation("relu"))
+    model.add(tf.python.keras.layers.Dense(1024))
+    model.add(tf.python.keras.layers.Activation("relu"))
     # output layer
-    model.add(tf.keras.layers.Dense(actions))
+    model.add(tf.python.keras.layers.Dense(actions))
     # Our action space is discrete - we can only do *one* thing
     # Ex we can't move up and down at same time!
-    model.add(tf.keras.layers.Activatiob("linear"))
+    model.add(tf.python.keras.layers.Activatiob("linear"))
 
     return model
 
