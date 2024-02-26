@@ -9,8 +9,8 @@ experiment = Experiment(
     workspace=os.environ["COMET_WORKSPACE"],
 )
 
-env = gym.make('Acrobot-v1', render_mode="rgb_array")
-env = gym.wrappers.RecordVideo(env, 'test')
+env = gym.make("Acrobot-v1", render_mode="rgb_array")
+env = gym.wrappers.RecordVideo(env, "test")
 env = CometLogger(env, experiment)
 
 for x in range(20):
@@ -21,4 +21,4 @@ for x in range(20):
         observation, reward, terminated, truncated, info = env.step(env.action_space.sample())
         env.render()
 
-env.close() #Uploads video folder 'test' to Comet
+env.close() # Uploads video folder "test" to Comet
