@@ -8,6 +8,8 @@ sudo ln -s /usr/bin/swig3.0 /usr/bin/swig
 
 ```
 pip install comet_ml moviepy
+pip install tensorflow
+pip install keras-rl
 pip install gymnasium[atari,accept-rom-license]
 ```
 
