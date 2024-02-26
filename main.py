@@ -1,9 +1,13 @@
 import os
 import gymnasium as gym
 import numpy as np
-from processor import Processor
+from rl.core import Processor
+from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
+from rl.agents import DQNAgent
+from rl.memory import SequentialMemory
 from PIL import Image
 import tensorflow as tf
+
 from comet_ml import Experiment
 from comet_ml.integration.gymnasium import CometLogger
 
@@ -78,3 +82,26 @@ def build_model(input_shape, actions=6):
 
     return model
 
+policy = LinearAnnealedPolicy(EpsGreedyQPolicy(),
+                              attr="eps",
+                              # Init as random actions (explore)
+                              value_max=1.0,
+                              # Take 10% of actions (explore=>exploit)
+                              value_min=0.1,
+                              value_test=0.05,
+                              nb_steps=500000)
+
+model = build_model(input_shape, actions)
+memory = SequentialMemory(limit=500000, window_length=WINDOW_LENGTH,)
+processor = ImageProcessor()
+dqn = DQNAgent(model, 
+               nb_actions=actions,
+               policy=policy,
+               memory=memory,
+               processor=processor,
+               # steps taken as exploration
+               nb_steps_warmup=50000,
+               gamma=.99,
+               target_model_update=1000,
+               train_interval=12,
+               delta_clip=1)

@@ -7,10 +7,10 @@ sudo ln -s /usr/bin/swig3.0 /usr/bin/swig
 ```
 
 ```
-pip install comet_ml moviepy
-pip install tensorflow
-pip install gymnasium[atari,accept-rom-license]
+pip install comet_ml moviepy tensorflow keras-rl gymnasium[atari,accept-rom-license]
 ```
+(I had to use sudo)
+
 
 If using test, install this:
 ```
