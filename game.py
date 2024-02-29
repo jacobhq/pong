@@ -22,8 +22,6 @@ RED = (255, 0, 0)
 radius = 15
 ball_x, ball_y = WIDTH/2 - radius, HEIGHT/2 - radius
 ball_vel_x, ball_vel_y = 0.7, 0.7
-dummy_ball_x, dummy_ball_y = WIDTH/2 - radius, HEIGHT/2 - radius
-dummy_ball_vel_x, dummy_ball_vel_y = 0.7, 0.7
 
 # paddle setup
 paddle_width, paddle_height = 20, 120
@@ -69,63 +67,45 @@ while run:
     # ball movement controls
     if ball_y <= 0 + radius or ball_y >= HEIGHT - radius:
         ball_vel_y *= -1
-    if dummy_ball_y <= 0 + radius or dummy_ball_y >= HEIGHT - radius:
-        dummy_ball_vel_y *= -1
     if ball_x >= WIDTH - radius:
         ball_x, ball_y = WIDTH/2 - radius, HEIGHT/2 - radius
-        dummy_ball_x, dummy_ball_y = WIDTH/2 - radius, HEIGHT/2 - radius
         dir = random.choice(direction)
         ang = random.choice(angle)
         if dir == 0:
             if ang == 0:
                 ball_vel_y, ball_vel_x = -1.4, 0.7
-                dummy_ball_vel_y, dummy_ball_vel_x = -1.4, 0.7
             if ang == 1:
                 ball_vel_y, ball_vel_x = 0.7, 0.7
-                dummy_ball_vel_y, dummy_ball_vel_x = 0.7, 0.7
             if ang == 2:
                 ball_vel_y, ball_vel_x = -0.7, 1.4
-                dummy_ball_vel_y, dummy_ball_vel_x = -0.7, 1.4
         if dir == 1:
             if ang == 0:
                 ball_vel_y, ball_vel_x = 1.4, 0.7
-                dummy_ball_vel_y, dummy_ball_vel_x = 1.4, 0.7
             if ang == 1:
                 ball_vel_y, ball_vel_x = 0.7, 0.7
-                dummy_ball_vel_y, dummy_ball_vel_x = 0.7, 0.7
             if ang == 2:
                 ball_vel_y, ball_vel_x = 0.7, 1.4
-                dummy_ball_vel_y, dummy_ball_vel_x = 0.7, 1.4
             ball_vel_x *= -1
-            dummy_ball_vel_x *= -1
 
     if ball_x <= 0 + radius:
         ball_x, ball_y = WIDTH/2 - radius, HEIGHT/2 - radius
-        dummy_ball_x, dummy_ball_y = WIDTH/2 - radius, HEIGHT/2 - radius
         dir = random.choice(direction)
         ang = random.choice(angle)
         if dir == 0:
             if ang == 0:
                 ball_vel_y, ball_vel_x = -1.4, 0.7
-                dummy_ball_vel_y, dummy_ball_vel_x = -1.4, 0.7
             if ang == 1:
                 ball_vel_y, ball_vel_x = 0.7, 0.7
-                dummy_ball_vel_y, dummy_ball_vel_x = 0.7, 0.7
             if ang == 2:
                 ball_vel_y, ball_vel_x = -0.7, 1.4
-                dummy_ball_vel_y, dummy_ball_vel_x = -0.7, 1.4
         if dir == 1:
             if ang == 0:
                 ball_vel_y, ball_vel_x = 1.4, 0.7
-                dummy_ball_vel_y, dummy_ball_vel_x = 1.4, 0.7
             if ang == 1:
                 ball_vel_y, ball_vel_x = 0.7, 0.7
-                dummy_ball_vel_y, dummy_ball_vel_x = 0.7, 0.7
             if ang == 2:
                 ball_vel_y, ball_vel_x = 0.7, 1.4
-                dummy_ball_vel_y, dummy_ball_vel_x = 0.7, 1.4
         ball_vel_x, ball_vel_y = 0.7, 0.7
-        dummy_ball_vel_x, dummy_ball_vel_y = 0.7, 0.7
 
     # paddle bounds
     if left_paddle_y >= HEIGHT - paddle_height:
@@ -143,14 +123,11 @@ while run:
         if left_paddle_y <= ball_y <= left_paddle_y + paddle_height:
             ball_x = left_paddle_x + paddle_width
             ball_vel_x *= -1
-            dummy_ball_x = left_paddle_x + paddle_width
-            dummy_ball_vel_x *= -1
     
     # right paddle
     if right_paddle_x <= ball_x <= right_paddle_x + paddle_width:
         if right_paddle_y <= ball_y <= right_paddle_y + paddle_height:
             ball_vel_x *= -1
-            dummy_ball_vel_x *= -1
 
     # gadgets in action
     if left_gadget == 1:
