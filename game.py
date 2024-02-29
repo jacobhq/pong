@@ -49,12 +49,16 @@ while run:
                 right_paddle_vel = 0.9
             if i.key == pygame.K_RIGHT and right_gadget_remaining > 0:
                 right_gadget = 1
+            if i.key == pygame.K_LEFT and right_gadget_remaining > 0:
+                right_gadget = 2
             if i.key == pygame.K_w:
                 left_paddle_vel = -0.9
             if i.key == pygame.K_s:
                 left_paddle_vel = 0.9
             if i.key == pygame.K_d and left_gadget_remaining > 0:
                 left_gadget = 1
+            if i.key == pygame.K_a and left_gadget_remaining > 0:
+                left_gadget = 2
 
         if i.type == pygame.KEYUP:
             right_paddle_vel = 0
@@ -82,6 +86,7 @@ while run:
             if ang == 2:
                 ball_vel_y, ball_vel_x = 0.7, 1.4
             ball_vel_x *= -1
+
     if ball_x <= 0 + radius:
         ball_x, ball_y = WIDTH/2 - radius, HEIGHT/2 - radius
         dir = random.choice(direction)
@@ -132,6 +137,10 @@ while run:
                 ball_vel_x *= -3.5
                 left_gadget = 0
                 left_gadget_remaining -= 1
+    elif left_gadget == 2:
+        left_paddle_y = ball_y
+        left_gadget = 0
+        left_gadget_remaining -=1
     
     if right_gadget == 1:
         if right_paddle_x <= ball_x <= right_paddle_x + paddle_width:
@@ -139,6 +148,10 @@ while run:
                 ball_vel_x *= -3.5
                 right_gadget = 0
                 right_gadget_remaining -= 1
+    elif right_gadget == 2:
+        right_paddle_y = ball_y
+        right_gadget = 0
+        right_gadget_remaining -=1
 
     # movemnt
     ball_x += ball_vel_x
