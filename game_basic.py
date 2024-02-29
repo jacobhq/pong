@@ -14,7 +14,6 @@ angle = [0, 1, 2]
 
 # colors
 BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
 
@@ -28,10 +27,6 @@ paddle_width, paddle_height = 20, 120
 left_paddle_y = right_paddle_y = HEIGHT/2 - paddle_height
 left_paddle_x, right_paddle_x = 100 - paddle_width/2, WIDTH - (100 - paddle_width/2)
 right_paddle_vel = left_paddle_vel = 0
-
-# gadgets
-left_gadget = right_gadget = 0
-left_gadget_remaining = right_gadget_remaining = 5
 
 # game loop
 while run:
@@ -47,15 +42,10 @@ while run:
                 right_paddle_vel = -0.9
             if i.key == pygame.K_DOWN:
                 right_paddle_vel = 0.9
-            if i.key == pygame.K_RIGHT and right_gadget_remaining > 0:
-                right_gadget = 1
             if i.key == pygame.K_w:
-                left_paddle_vel = -0.9
+                left_paddle_vel =-0.9
             if i.key == pygame.K_s:
-                left_paddle_vel = 0.9
-            if i.key == pygame.K_d and left_gadget_remaining > 0:
-                left_gadget = 1
-
+                left_paddle_vel =0.9
         if i.type == pygame.KEYUP:
             right_paddle_vel = 0
             left_paddle_vel = 0
@@ -124,22 +114,6 @@ while run:
         if right_paddle_y <= ball_y <= right_paddle_y + paddle_height:
             ball_vel_x *= -1
 
-    # gadgets in action
-    if left_gadget == 1:
-        if left_paddle_x <= ball_x <= left_paddle_x + paddle_width:
-            if left_paddle_y <= ball_y <= left_paddle_y + paddle_height:
-                ball_x = left_paddle_x + paddle_width
-                ball_vel_x *= -3.5
-                left_gadget = 0
-                left_gadget_remaining -= 1
-    
-    if right_gadget == 1:
-        if right_paddle_x <= ball_x <= right_paddle_x + paddle_width:
-            if right_paddle_y <= ball_y <= right_paddle_y + paddle_height:
-                ball_vel_x *= -3.5
-                right_gadget = 0
-                right_gadget_remaining -= 1
-
     # movemnt
     ball_x += ball_vel_x
     ball_y += ball_vel_y
@@ -150,10 +124,4 @@ while run:
     pygame.draw.circle(wn, BLUE, (ball_x, ball_y), radius)
     pygame.draw.rect(wn, RED, pygame.Rect(left_paddle_x, left_paddle_y, paddle_width, paddle_height))
     pygame.draw.rect(wn, RED, pygame.Rect(right_paddle_x, right_paddle_y, paddle_width, paddle_height))
-
-    if left_gadget == 1:
-        pygame.draw.circle(wn, WHITE, (left_paddle_x + 10, left_paddle_y + 10), 4)
-    if right_gadget == 1:
-        pygame.draw.circle(wn, WHITE, (right_paddle_x + 10, right_paddle_y + 10), 4)
-
     pygame.display.update()
