@@ -66,6 +66,18 @@ while run:
     if right_paddle_y <= 0:
         right_paddle_y = 0
 
+    # paddle-ball collision logic
+    # left paddle
+    if left_paddle_x <= ball_x <= left_paddle_x + paddle_width:
+        if left_paddle_y <= ball_y <= left_paddle_y + paddle_height:
+            ball_x = left_paddle_x + paddle_width
+            ball_vel_x *= -1
+    
+    # right paddle
+    if right_paddle_x <= ball_x <= right_paddle_x + paddle_width:
+        if right_paddle_y <= ball_y <= right_paddle_y + paddle_height:
+            ball_vel_x *= -1
+
     # movemnt
     ball_x += ball_vel_x
     ball_y += ball_vel_y
