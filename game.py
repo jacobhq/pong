@@ -8,6 +8,20 @@ wn = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("[PROTOTYPE] Q-learning pong (Jacob Marshall)")
 run = True
 
+left_point_added = False
+right_point_added = False
+
+left_score = 0
+right_score = 0
+
+def add_point(side):
+    global left_score, right_score
+    if side == "left":
+        left_score += 1
+    elif side == "right":
+        right_score += 1
+    print(f"left score: {left_score} and right score: {right_score}")
+
 # inital game config space
 direction = [0, 1]
 angle = [0, 1, 2]
@@ -123,11 +137,21 @@ while run:
         if left_paddle_y <= ball_y <= left_paddle_y + paddle_height:
             ball_x = left_paddle_x + paddle_width
             ball_vel_x *= -1
+            if not left_point_added:
+                add_point("left")
+                left_point_added = True
+    else:
+        left_point_added = False
     
     # right paddle
     if right_paddle_x <= ball_x <= right_paddle_x + paddle_width:
         if right_paddle_y <= ball_y <= right_paddle_y + paddle_height:
             ball_vel_x *= -1
+            if not right_point_added:
+                add_point("right")
+                right_point_added = True
+    else:
+        right_point_added = False
 
     # gadgets in action
     if left_gadget == 1:
