@@ -8,6 +8,12 @@ wn = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("[PROTOTYPE] Q-learning pong (Jacob Marshall)")
 run = True
 
+# reset
+# reward
+# play(action) -> direction
+# game_iteration
+# is_collision
+
 left_point_added = False
 right_point_added = False
 
