@@ -13,7 +13,7 @@ GREEN = (0, 255, 0)
 # Basic parameters of the screen
 WIDTH, HEIGHT = 900, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("[PROTOTYPE] Q-learning pong (Jacob Marshall) - git:ml-agent")
+pygame.display.set_caption("[PROTOTYPE] Pong w/ deep learning - git:ml-agent")
 
 clock = pygame.time.Clock() 
 FPS = 30
@@ -24,10 +24,8 @@ FPS = 30
 # game_iteration
 # is_collision
 
-# Striker class
-
-
-class Striker:
+# Paddle class
+class Paddle:
 		# Take the initial position, dimensions, speed and color of the object
 	def __init__(self, posx, posy, width, height, speed, color):
 		self.posx = posx
@@ -127,8 +125,8 @@ def main():
 	running = True
 
 	# Defining the objects
-	player_left = Striker(20, 0, 10, 100, 10, GREEN)
-	player_right = Striker(WIDTH-30, 0, 10, 100, 10, GREEN)
+	player_left = Paddle(20, 0, 10, 100, 10, GREEN)
+	player_right = Paddle(WIDTH-30, 0, 10, 100, 10, GREEN)
 	ball = Ball(WIDTH//2, HEIGHT//2, 7, 7, WHITE)
 
 	players = [player_left, player_right]
