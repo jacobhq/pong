@@ -118,83 +118,67 @@ class Ball:
     def getRect(self):
         return self.ball
 
+class Game:
+    def __init__(self):
+        self.running = True
+        self.player_left = Paddle(20, 0, 10, 100, 10, GREEN)
+        self.player_right = Paddle(WIDTH-30, 0, 10, 100, 10, GREEN)
+        self.ball = Ball(WIDTH//2, HEIGHT//2, 7, 7, WHITE)
+        self.players = [self.player_left, self.player_right]
+        self.player_left_score, self.player_right_score = 0, 0
+        self.player_left_yfac, self.player_right_yfac = 0, 0
 
-# Game Manager
-def main():
-    running = True
+    def run(self):
+        while self.running:
+            screen.fill(BLACK)
 
-    # Defining the objects
-    player_left = Paddle(20, 0, 10, 100, 10, GREEN)
-    player_right = Paddle(WIDTH-30, 0, 10, 100, 10, GREEN)
-    ball = Ball(WIDTH//2, HEIGHT//2, 7, 7, WHITE)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        self.player_right_yfac = -1
+                    if event.key == pygame.K_DOWN:
+                        self.player_right_yfac = 1
+                    if event.key == pygame.K_w:
+                        self.player_left_yfac = -1
+                    if event.key == pygame.K_s:
+                        self.player_left_yfac = 1
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                        self.player_right_yfac = 0
+                    if event.key == pygame.K_w or event.key == pygame.K_s:
+                        self.player_left_yfac = 0
 
-    players = [player_left, player_right]
+            for p in self.players:
+                if pygame.Rect.colliderect(self.ball.getRect(), p.getRect()):
+                    self.ball.hit()
 
-    # Initial parameters of the players
-    player_left_score, player_right_score = 0, 0
-    player_left_yfac, player_right_yfac = 0, 0
+            self.player_left.update(self.player_left_yfac)
+            self.player_right.update(self.player_right_yfac)
+            point = self.ball.update()
 
-    while running:
-        screen.fill(BLACK)
+            if point == -1:
+                self.player_left_score += 1
+            elif point == 1:
+                self.player_right_score += 1
 
-        # Event handling
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    player_right_yfac = -1
-                if event.key == pygame.K_DOWN:
-                    player_right_yfac = 1
-                if event.key == pygame.K_w:
-                    player_left_yfac = -1
-                if event.key == pygame.K_s:
-                    player_left_yfac = 1
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-                    player_right_yfac = 0
-                if event.key == pygame.K_w or event.key == pygame.K_s:
-                    player_left_yfac = 0
+            if point: 
+                self.ball.reset()
 
-        # Collision detection
-        for p in players:
-            if pygame.Rect.colliderect(ball.getRect(), p.getRect()):
-                ball.hit()
+            self.player_left.display()
+            self.player_right.display()
+            self.ball.display()
 
-        # Updating the objects
-        player_left.update(player_left_yfac)
-        player_right.update(player_right_yfac)
-        point = ball.update()
+            self.player_left.displayScore("human : ", 
+                            self.player_left_score, 100, 20, WHITE)
+            self.player_right.displayScore("DQN : ", 
+                            self.player_right_score, WIDTH-100, 20, WHITE)
 
-        # -1 -> p_1 has scored
-        # +1 -> p_2 has scored
-        # 0 -> None of them scored
-        if point == -1:
-            player_left_score += 1
-        elif point == 1:
-            player_right_score += 1
-
-        # Someone has scored
-        # a point and the ball is out of bounds.
-        # So, we reset it's position
-        if point: 
-            ball.reset()
-
-        # Displaying the objects on the screen
-        player_left.display()
-        player_right.display()
-        ball.display()
-
-        # Displaying the scores of the players
-        player_left.displayScore("human : ", 
-                        player_left_score, 100, 20, WHITE)
-        player_right.displayScore("DQN : ", 
-                        player_right_score, WIDTH-100, 20, WHITE)
-
-        pygame.display.update()
-        clock.tick(FPS)
-
+            pygame.display.update()
+            clock.tick(FPS)
 
 if __name__ == "__main__":
-    main()
+    game = Game()
+    game.run()
     pygame.quit()
