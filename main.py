@@ -3,8 +3,10 @@ from pong import Game
 import pygame
 import neat
 import os
-import time
 import pickle
+
+WIDTH, HEIGHT = 700, 500
+MAX_TRAINING_GENS = 50
 
 class PongGame:
     def __init__(self, window, width, height):
@@ -89,8 +91,7 @@ class PongGame:
         genome2.fitness += game_info.right_hits
 
 def eval_genomes(genomes, config):
-    width, height = 700, 500
-    window = pygame.display.set_mode((width, height))
+    window = pygame.display.set_mode((WIDTH, HEIGHT))
     
     for i, (genome_id1, genome1) in enumerate(genomes):
         if i == len(genomes) - 1:
@@ -98,19 +99,19 @@ def eval_genomes(genomes, config):
         genome1.fitness = 0
         for genome_id2, genome2 in genomes[i+1:]:
             genome2.fitness = 0 if genome2.fitness == None else genome2.fitness
-            game = PongGame(window, width, height)
+            game = PongGame(window, WIDTH, HEIGHT)
             game.train_ai(genome1, genome2, config)
 
 def run_neat(config):
     # restore from checkpoint
-    p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-0')
-    #p = neat.Population(config)
+    # p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-0')
+    p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
     p.add_reporter(neat.Checkpointer(1))
     
-    winner = p.run(eval_genomes, 1)
+    winner = p.run(eval_genomes, 50)
     with open("best.pickle","wb") as f:
         pickle.dump(winner, f)
         
@@ -118,10 +119,9 @@ def test_ai(config):
     with open("best.pickle","rb") as f:
         winner = pickle.load(f)
         
-    width, height = 700, 500
-    window = pygame.display.set_mode((width, height))
+    window = pygame.display.set_mode((WIDTH, HEIGHT))
     
-    game = PongGame(window, width, height)
+    game = PongGame(window, WIDTH, HEIGHT)
     game.test_ai(winner, config)
 
 if __name__ == "__main__":
