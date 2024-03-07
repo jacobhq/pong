@@ -43,8 +43,8 @@ class PongGame:
             else:
                 self.game.move_paddle(left=False, up=False)
             
-            # game_info = self.game.loop()
-            # print(game_info.left_score, game_info.right_score)
+            game_info = self.game.loop()
+            print(game_info.left_score, game_info.right_score)
             self.game.draw(True, False)
             pygame.display.update()
             
