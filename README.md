@@ -1,6 +1,9 @@
 # pong
 
 ## Setup
+```
+conda create -n pong python=3.9
+```
 
 Setup build deps[^1] (not necessary in current repo config):
 ```
