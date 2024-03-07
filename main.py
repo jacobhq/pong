@@ -115,7 +115,7 @@ def run_neat(config):
         pickle.dump(winner, f)
         
 def test_ai(config):
-    with open("best.pickle","wb") as f:
+    with open("best.pickle","rb") as f:
         winner = pickle.load(f)
         
     width, height = 700, 500
