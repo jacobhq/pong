@@ -2,8 +2,8 @@ from .paddle import Paddle
 from .ball import Ball
 import pygame
 import random
-pygame.init()
 
+pygame.init()
 
 class GameInformation:
     def __init__(self, left_hits, right_hits, left_score, right_score):
