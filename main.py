@@ -89,11 +89,9 @@ class PongGame:
         
         # Punish for not moving
         if last_action1 == 0:
-            print("p1")
-            genome1.fitness -= 0.25
+            genome1.fitness -= 0.75
         if last_action2 == 0:
-            print("p2")
-            genome2.fitness -= 0.25
+            genome2.fitness -= 0.75
 
 def eval_genomes(genomes, config):
     window = pygame.display.set_mode((WIDTH, HEIGHT))
