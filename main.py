@@ -80,12 +80,20 @@ class PongGame:
             pygame.display.update()
             
             if game_info.left_score >= 1 or game_info.right_score >= 1 or game_info.left_hits > 50:
-                self.calculate_fitness(genome1, genome2, game_info)
+                self.calculate_fitness(genome1, genome2, game_info, decision1, decision2)
                 break
             
-    def calculate_fitness(self, genome1, genome2, game_info):
+    def calculate_fitness(self, genome1, genome2, game_info, last_action1, last_action2):
         genome1.fitness += game_info.left_hits
         genome2.fitness += game_info.right_hits
+        
+        # Punish for not moving
+        if last_action1 == 0:
+            print("p1")
+            genome1.fitness -= 0.25
+        if last_action2 == 0:
+            print("p2")
+            genome2.fitness -= 0.25
 
 def eval_genomes(genomes, config):
     window = pygame.display.set_mode((WIDTH, HEIGHT))
