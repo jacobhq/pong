@@ -1,10 +1,25 @@
 # https://neat-python.readthedocs.io/en/latest/xor_example.html
-import time
 from pong import Game
 import pygame
 import neat
 import os
 import pickle
+import matplotlib.pyplot as plt
+
+def plot_stats(stats, filename):
+    # Plot the statistics
+    generation = range(len(stats.get_fitness_mean()))
+    fitness_mean = stats.get_fitness_mean()
+    fitness_max = stats.get_fitness_stat("max")
+
+    plt.plot(generation, fitness_mean, label="average")
+    plt.plot(generation, fitness_max, label="maximum")
+    plt.xlabel("Generations")
+    plt.ylabel("Fitness")
+    plt.legend()
+
+    # Save the plot to a file
+    plt.savefig(filename)
 
 WIDTH, HEIGHT = 700, 500
 MAX_TRAINING_GENS = 50
@@ -51,52 +66,48 @@ class PongGame:
     def train_ai(self, genome1, genome2, config):
         net1 = neat.nn.FeedForwardNetwork.create(genome1, config)
         net2 = neat.nn.FeedForwardNetwork.create(genome2, config)
-        self.genome1 = genome1
-        self.genome2 = genome2
         
         run = True
-        start_time = time.time()
-        max_hits = 50
-
         while run:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    return True
-
+                    quit()
+            
+            output1 = net1.activate((self.left_paddle.y, self.ball.y, abs(self.left_paddle.x - self.ball.x)))
+            decision1 = output1.index(max(output1))
+            if decision1 == 0:
+                pass
+            elif decision1 == 1:
+                self.game.move_paddle(left=True, up=True)
+            else:
+                self.game.move_paddle(left=True, up=False)
+            
+            output2 = net2.activate((self.right_paddle.y, self.ball.y, abs(self.right_paddle.x - self.ball.x)))
+            decision2 = output2.index(max(output2))
+            if decision2 == 0:
+                pass
+            elif decision2 == 1:
+                self.game.move_paddle(left=False, up=True)
+            else:
+                self.game.move_paddle(left=False, up=False)
+            
             game_info = self.game.loop()
-
-            self.move_ai_paddles(net1, net2)
-
             self.game.draw(draw_score=False, draw_hits=True)
-
             pygame.display.update()
-
-            duration = time.time() - start_time
-            if game_info.left_score == 1 or game_info.right_score == 1 or game_info.left_hits >= max_hits:
-                self.calculate_fitness(game_info, duration)
+            
+            if game_info.left_score >= 1 or game_info.right_score >= 1 or game_info.left_hits > 50:
+                self.calculate_fitness(genome1, genome2, game_info, decision1, decision2)
                 break
-    
-    def move_ai_paddles(self, net1, net2):
-        players = [(self.genome1, net1, self.left_paddle, True), (self.genome2, net2, self.right_paddle, False)]
-        for (genome, net, paddle, left) in players:
-            output = net.activate(
-                (paddle.y, abs(paddle.x - self.ball.x), self.ball.y))
-            decision = output.index(max(output))
-
-            valid = True
-            if decision == 0:  # Don't move
-                genome.fitness -= 0.01  # we want to discourage this
-            elif decision == 1:  # Move up
-                valid = self.game.move_paddle(left=left, up=True)
-            else:  # Move down
-                valid = self.game.move_paddle(left=left, up=False)
-
-            if not valid:  # If the movement makes the paddle go off the screen punish the AI
-                genome.fitness -= 0.01
-      
-    def calculate_fitness(self, game_info, duration):
-        self.genome1.fitness += game_info.left_hits
-        self.genome2.fitness += game_info.right_hits
+            
+    def calculate_fitness(self, genome1, genome2, game_info, last_action1, last_action2):
+        genome1.fitness += game_info.left_hits
+        genome2.fitness += game_info.right_hits
+        
+        # Punish for not moving
+        if last_action1 == 0:
+            genome1.fitness -= 0.75
+        if last_action2 == 0:
+            genome2.fitness -= 0.75
 
 def eval_genomes(genomes, config):
     window = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -112,14 +123,15 @@ def eval_genomes(genomes, config):
 
 def run_neat(config):
     # restore from checkpoint
-    # p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-58')
-    p = neat.Population(config)
+    p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-28')
+    # p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
     p.add_reporter(neat.Checkpointer(1))
     
     winner = p.run(eval_genomes, 50)
+    plot_stats(stats, "stats.png")
     with open("best.pickle","wb") as f:
         pickle.dump(winner, f)
         
