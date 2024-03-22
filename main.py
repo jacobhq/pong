@@ -4,7 +4,6 @@ import pygame
 import neat
 import os
 import pickle
-import matplotlib.pyplot as plt
 
 WIDTH, HEIGHT = 700, 500
 MAX_TRAINING_GENS = 50
@@ -15,10 +14,6 @@ class PongGame:
         self.left_paddle = self.game.left_paddle
         self.right_paddle = self.game.right_paddle
         self.ball = self.game.ball
-        
-        # count moves for training
-        self.left_moves = 0
-        self.right_moves = 0
         
     def test_ai(self, genome, config):
         net = neat.nn.FeedForwardNetwork.create(genome, config)
@@ -49,6 +44,7 @@ class PongGame:
                 self.game.move_paddle(left=False, up=False)
             
             game_info = self.game.loop()
+            print(game_info.left_score, game_info.right_score)
             self.game.draw(True, False)
             pygame.display.update()
             
@@ -68,10 +64,8 @@ class PongGame:
                 pass
             elif decision1 == 1:
                 self.game.move_paddle(left=True, up=True)
-                self.left_moves += 1
             else:
                 self.game.move_paddle(left=True, up=False)
-                self.left_moves += 1
             
             output2 = net2.activate((self.right_paddle.y, self.ball.y, abs(self.right_paddle.x - self.ball.x)))
             decision2 = output2.index(max(output2))
@@ -79,28 +73,20 @@ class PongGame:
                 pass
             elif decision2 == 1:
                 self.game.move_paddle(left=False, up=True)
-                self.left_moves += 1
             else:
                 self.game.move_paddle(left=False, up=False)
-                self.left_moves += 1
             
             game_info = self.game.loop()
             self.game.draw(draw_score=False, draw_hits=True)
             pygame.display.update()
             
             if game_info.left_score >= 1 or game_info.right_score >= 1 or game_info.left_hits > 50:
-                self.calculate_fitness(genome1, genome2, game_info, decision1, decision2)
+                self.calculate_fitness(genome1, genome2, game_info)
                 break
             
-    def calculate_fitness(self, genome1, genome2, game_info, last_action1, last_action2):
-        genome1.fitness += game_info.left_hits - self.left_moves
-        genome2.fitness += game_info.right_hits - self.right_moves
-        
-        # Punish for not moving
-        if last_action1 == 0:
-            genome1.fitness -= 1
-        if last_action2 == 0:
-            genome2.fitness -= 1
+    def calculate_fitness(self, genome1, genome2, game_info):
+        genome1.fitness += game_info.left_hits
+        genome2.fitness += game_info.right_hits
 
 def eval_genomes(genomes, config):
     window = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -116,14 +102,14 @@ def eval_genomes(genomes, config):
 
 def run_neat(config):
     # restore from checkpoint
-    p = neat.Checkpointer.restore_checkpoint("dist/big_train_11032024/big_train_11032024_66")
-    #p = neat.Population(config)
+    # p = neat.Checkpointer.restore_checkpoint("dist/big_train_11032024/big_train_11032024_66")
+    p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
-    p.add_reporter(neat.Checkpointer(generation_interval=10, filename_prefix="big_train_11032024_"))
+    p.add_reporter(neat.Checkpointer(generation_interval=10, filename_prefix="refactor_22032024_"))
     
-    winner = p.run(eval_genomes, 1)
+    winner = p.run(eval_genomes, 50)
     with open("best.pickle","wb") as f:
         pickle.dump(winner, f)
         
