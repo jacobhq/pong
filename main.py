@@ -1,9 +1,11 @@
 # https://neat-python.readthedocs.io/en/latest/xor_example.html
-from pong import Game
-import pygame
-import neat
 import os
 import pickle
+
+import neat
+import pygame
+
+from pong import Game
 
 WIDTH, HEIGHT = 700, 500
 MAX_TRAINING_GENS = 50
