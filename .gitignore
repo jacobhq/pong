@@ -178,3 +178,6 @@ pyrightconfig.json
 # Models and checkpoints
 best.pickle
 neat-checkpoint-*
+
+# jetbrains
+.idea/**

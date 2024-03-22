@@ -2,7 +2,7 @@ import pygame
 
 
 class Paddle:
-    VEL = 4
+    VEL = 5
     WIDTH = 20
     HEIGHT = 100
 
