@@ -32,9 +32,9 @@ class PongGame:
 
             # movement for human (left side only)
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_w]:
+            if keys[pygame.K_w] or keys[pygame.K_UP]:
                 self.game.move_paddle(left=True, up=True)
-            if keys[pygame.K_s]:
+            if keys[pygame.K_s] or keys[pygame.K_DOWN]:
                 self.game.move_paddle(left=True, up=False)
 
             output = net.activate((self.right_paddle.y, self.ball.y, abs(self.right_paddle.x - self.ball.x)))
@@ -107,8 +107,8 @@ def eval_genomes(genomes, config):
 
 def run_neat(config):
     # restore from checkpoint
-    # p = neat.Checkpointer.restore_checkpoint("dist/big_train_11032024/big_train_11032024_66")
-    p = neat.Population(config)
+    p = neat.Checkpointer.restore_checkpoint("refactor_22032024_38")
+    # p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
@@ -136,4 +136,3 @@ if __name__ == "__main__":
     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation,
                          config_path)
     run_neat(config)
-    test_ai(config)
