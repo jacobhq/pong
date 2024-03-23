@@ -116,6 +116,7 @@ def run_neat(config):
 
     winner = p.run(eval_genomes, 50)
     with open("best.pickle", "wb") as f:
+        print("Writing new model to best.pickle")
         pickle.dump(winner, f)
 
 
