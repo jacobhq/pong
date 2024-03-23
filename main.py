@@ -80,16 +80,16 @@ class PongGame:
                 self.game.move_paddle(left=False, up=False)
 
             game_info = self.game.loop()
-            self.game.draw(draw_score=False, draw_hits=True)
+            self.game.draw(True, False)
             pygame.display.update()
 
-            if game_info.left_score >= 1 or game_info.right_score >= 1 or game_info.left_hits > 50:
+            if game_info.left_score >= 10 or game_info.right_score >= 10:
                 self.calculate_fitness(genome1, genome2, game_info)
                 break
 
     def calculate_fitness(self, genome1, genome2, game_info):
-        genome1.fitness += game_info.left_hits
-        genome2.fitness += game_info.right_hits
+        genome1.fitness += game_info.left_hits + (game_info.left_score * 10)
+        genome2.fitness += game_info.right_hits + (game_info.right_score * 10)
 
 
 def eval_genomes(genomes, config):
@@ -107,12 +107,12 @@ def eval_genomes(genomes, config):
 
 def run_neat(config):
     # restore from checkpoint
-    p = neat.Checkpointer.restore_checkpoint("refactor_22032024_38")
-    # p = neat.Population(config)
+    # p = neat.Checkpointer.restore_checkpoint("refactor_22032024_38")
+    p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
-    p.add_reporter(neat.Checkpointer(generation_interval=10, filename_prefix="refactor_22032024_"))
+    p.add_reporter(neat.Checkpointer(generation_interval=10, filename_prefix="use_score_23032024_"))
 
     winner = p.run(eval_genomes, 50)
     with open("best.pickle", "wb") as f:
