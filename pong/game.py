@@ -84,7 +84,7 @@ class Game:
                     difference_in_y = middle_y - ball.y
                     reduction_factor = (Paddle.HEIGHT / 2) / ball.MAX_VEL
                     y_vel = difference_in_y / reduction_factor
-                    ball.y_vel = -1 * y_vel
+                    ball.y_vel = -1 * y_vel + random.uniform(-1, 1)
                     self.left_hits += 1
 
         else:
@@ -96,7 +96,7 @@ class Game:
                     difference_in_y = middle_y - ball.y
                     reduction_factor = (Paddle.HEIGHT / 2) / ball.MAX_VEL
                     y_vel = difference_in_y / reduction_factor
-                    ball.y_vel = -1 * y_vel
+                    ball.y_vel = -1 * y_vel + random.uniform(-1, 1)
                     self.right_hits += 1
 
     def draw(self, draw_score=True, draw_hits=False):

@@ -1,4 +1,5 @@
 # https://neat-python.readthedocs.io/en/latest/xor_example.html
+import multiprocessing
 import os
 import pickle
 
@@ -56,7 +57,7 @@ class PongGame:
         net2 = neat.nn.FeedForwardNetwork.create(genome2, config)
 
         inaction_penalty = 0.5
-        game_timeout = 60000
+        game_timeout = 15000
 
         start_time = pygame.time.get_ticks()
 
@@ -90,17 +91,20 @@ class PongGame:
             self.game.draw(True, True)
             pygame.display.update()
 
-            if game_info.left_score >= 10 or game_info.right_score >= 10:
+            if pygame.time.get_ticks() - start_time > game_timeout:
+                self.calculate_fitness(genome1, genome2, game_info, True)
+                break
+
+            if game_info.left_score >= 5 or game_info.right_score >= 5:
                 self.calculate_fitness(genome1, genome2, game_info)
                 break
 
-            if pygame.time.get_ticks() - start_time > game_timeout:
-                print("Game timeout reached")
-                break
-
-    def calculate_fitness(self, genome1, genome2, game_info):
-        genome1.fitness += (game_info.left_hits + (game_info.left_score * 2)) / 3
-        genome2.fitness += (game_info.right_hits + (game_info.right_score * 2)) / 3
+    def calculate_fitness(self, genome1, genome2, game_info, timeout=False):
+        print(
+            f"timeout: {timeout}, genome1_left: {(game_info.left_hits + (game_info.left_score * 3) - (game_info.right_score * 3))}, genome2_right: {(game_info.right_hits + (game_info.right_score * 3) - (game_info.left_score * 3))}")
+        if timeout: return
+        genome1.fitness += (game_info.left_hits + (game_info.left_score * 3) - (game_info.right_score * 3))
+        genome2.fitness += (game_info.right_hits + (game_info.right_score * 3) - (game_info.left_score * 3))
 
 
 def eval_genomes(genomes, config):
@@ -118,14 +122,17 @@ def eval_genomes(genomes, config):
 
 def run_neat(config):
     # restore from checkpoint
-    # p = neat.Checkpointer.restore_checkpoint("refactor_22032024_38")
-    p = neat.Population(config)
+    p = neat.Checkpointer.restore_checkpoint("fix_ball_24032024_17")
+    # p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
-    p.add_reporter(neat.Checkpointer(generation_interval=10, filename_prefix="use_score_23032024_"))
+    p.add_reporter(neat.Checkpointer(generation_interval=10, filename_prefix="fix_ball_24032024_"))
 
-    winner = p.run(eval_genomes, 50)
+    pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), eval_genomes)
+    # winner = p.run(pe.evaluate, 500)
+    winner = p.run(eval_genomes, 500)
+
     with open("best.pickle", "wb") as f:
         print("Writing new model to best.pickle")
         pickle.dump(winner, f)
