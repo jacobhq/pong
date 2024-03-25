@@ -1,5 +1,4 @@
 # https://neat-python.readthedocs.io/en/latest/xor_example.html
-import multiprocessing
 import os
 import pickle
 
@@ -122,16 +121,16 @@ def eval_genomes(genomes, config):
 
 def run_neat(config):
     # restore from checkpoint
-    p = neat.Checkpointer.restore_checkpoint("fix_ball_24032024_17")
+    p = neat.Checkpointer.restore_checkpoint("fix_ball_24032024_35")
     # p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
     p.add_reporter(neat.Checkpointer(generation_interval=10, filename_prefix="fix_ball_24032024_"))
 
-    pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), eval_genomes)
+    # pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), eval_genomes)
     # winner = p.run(pe.evaluate, 500)
-    winner = p.run(eval_genomes, 500)
+    winner = p.run(eval_genomes, 75)
 
     with open("best.pickle", "wb") as f:
         print("Writing new model to best.pickle")
