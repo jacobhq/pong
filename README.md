@@ -13,7 +13,7 @@ conda activate pong
 ```
 pip install pygame neat-python
 ```
-3. To play against the AI, download the model from releases, and rename to `bext.pickle`
+3. To play against the AI, download the model from releases, and rename to `best.pickle`
 4. Then run `play_ai.py`
 
 ## Training and Development
