@@ -71,9 +71,15 @@ class Game:
         right_paddle = self.right_paddle
 
         if ball.y + ball.RADIUS >= self.window_height:
-            ball.y_vel *= -1
+            print(f"[top] vel: {ball.y_vel},  pos: ({ball.x, ball.y})")
+            ball.y = self.window_height - ball.RADIUS
+            ball.y_vel = -abs(ball.y_vel)
+            print(f"[top]: INVERT: {ball.y_vel}, pos: ({ball.x, ball.y})")
         elif ball.y - ball.RADIUS <= 0:
-            ball.y_vel *= -1
+            print(f"[btm]: vel: {ball.y_vel}, pos: ({ball.x, ball.y})")
+            ball.y = ball.RADIUS
+            ball.y_vel = abs(ball.y_vel)
+            print(f"[btm]: INVERT: {ball.y_vel}, pos: ({ball.x, ball.y})")
 
         if ball.x_vel < 0:
             if ball.y >= left_paddle.y and ball.y <= left_paddle.y + Paddle.HEIGHT:

@@ -55,8 +55,9 @@ class PongGame:
         net1 = neat.nn.FeedForwardNetwork.create(genome1, config)
         net2 = neat.nn.FeedForwardNetwork.create(genome2, config)
 
+        # Define training variables
         inaction_penalty = 0.5
-        game_timeout = 15000
+        game_timeout = 45000
 
         start_time = pygame.time.get_ticks()
 
@@ -101,7 +102,6 @@ class PongGame:
     def calculate_fitness(self, genome1, genome2, game_info, timeout=False):
         print(
             f"timeout: {timeout}, genome1_left: {(game_info.left_hits + (game_info.left_score * 3) - (game_info.right_score * 3))}, genome2_right: {(game_info.right_hits + (game_info.right_score * 3) - (game_info.left_score * 3))}")
-        if timeout: return
         genome1.fitness += (game_info.left_hits + (game_info.left_score * 3) - (game_info.right_score * 3))
         genome2.fitness += (game_info.right_hits + (game_info.right_score * 3) - (game_info.left_score * 3))
 
@@ -121,16 +121,16 @@ def eval_genomes(genomes, config):
 
 def run_neat(config):
     # restore from checkpoint
-    p = neat.Checkpointer.restore_checkpoint("fix_ball_24032024_35")
+    p = neat.Checkpointer.restore_checkpoint("fix_collisions_06042024_10")
     # p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
-    p.add_reporter(neat.Checkpointer(generation_interval=10, filename_prefix="fix_ball_24032024_"))
+    p.add_reporter(neat.Checkpointer(generation_interval=1, filename_prefix="fix_collisions_06042024_"))
 
     # pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), eval_genomes)
     # winner = p.run(pe.evaluate, 500)
-    winner = p.run(eval_genomes, 75)
+    winner = p.run(eval_genomes, 500)
 
     with open("best.pickle", "wb") as f:
         print("Writing new model to best.pickle")
