@@ -19,6 +19,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide-react": "^0.365.0",
+    "nanoid": "^5.0.6",
     "next": "14.1.4",
     "next-auth": "^4.24.7",
     "nodemailer": "^6.9.13",

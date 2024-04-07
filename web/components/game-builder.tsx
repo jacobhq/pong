@@ -6,23 +6,35 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { getServerSession } from "next-auth";
 import {authOptions} from "@/lib/auth";
+import {generateGameId} from "@/lib/id";
+import {Game} from "@/lib/types";
+import {getModel, newGame} from "@/lib/queries";
+import {redirect} from "next/navigation";
 
 export async function GameBuilder() {
   const session = (await getServerSession(authOptions)) || {};
 
-  async function createGame(formData: FormData) {
+  async function createGame(rawFormData: FormData) {
     'use server'
 
-    const rawFormData = {
-      name: formData.get('name'),
-      // @ts-ignore
-      email: session ? session.user.email : "",
-      model: formData.get('model'),
+    const formData = {
+      name: rawFormData.get('name') as string,
+      model: rawFormData.get('model') as string,
     }
 
-    console.log(rawFormData)
+    const game: Game = {
+      id: generateGameId(),
+      name: formData.name,
+      owner: session ? session.user.id : "",
+      model: await getModel(formData.model) as string,
+    }
 
-    // ...
+    await newGame(game).catch((err) => {
+      console.error(err)
+      throw err
+    })
+
+    redirect(`/game/${game.id}/code`)
   }
 
 
@@ -41,17 +53,17 @@ export async function GameBuilder() {
           <div className="space-y-2">
             <Label htmlFor="owner">Owner</Label>
             {/* @ts-ignore */}
-            <Input id="owner" value={session ? session?.user?.email : ""} readOnly />
+            <Input id="owner" value={session ? session?.user?.id : ""} readOnly />
           </div>
           <div className="space-y-2">
             <div className="space-y-2">
               <Label htmlFor="model">Model</Label>
-              <Select defaultValue="@jhqcat/pong-v0.1.0" name="model">
+              <Select defaultValue="@jhqcat/pong-v0.2.1" name="model">
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select a model"/>
                 </SelectTrigger>
                 <SelectContent className="w-full max-w-xs">
-                  <SelectItem value="@jhqcat/pong-v0.1.0">@jhqcat/pong-v0.1.0</SelectItem>
+                  <SelectItem value="@jhqcat/pong-v0.2.1">@jhqcat/pong-v0.2.1</SelectItem>
                   <Separator/>
                   <SelectItem value="custom" disabled>Upload your own model</SelectItem>
                 </SelectContent>

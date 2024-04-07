@@ -10,6 +10,15 @@ const redis = new Redis({
 
 export const authOptions = {
     adapter: UpstashRedisAdapter(redis),
+    callbacks: {
+        // @ts-expect-error
+        async session({session, token, user}) {
+            // Send properties to the client, like an access_token and user id from a provider.
+            session.user.id = user.id
+
+            return session
+        }
+    },
     providers: [
         EmailProvider({
             server: process.env.EMAIL_SERVER,
