@@ -20,10 +20,10 @@ export function JoinCode() {
                     <div className="text-sm font-medium text-gray-500 dark:text-gray-400">3 participants have joined
                     </div>
                     <div className="flex items-center space-x-4">
-                        <Button size="sm" variant="outline">
+                        <Button variant="outline">
                             Back
                         </Button>
-                        <Button size="sm">Start game</Button>
+                        <Button>Start game</Button>
                     </div>
                 </CardFooter>
             </Card>
