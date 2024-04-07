@@ -5,6 +5,8 @@ import random
 
 pygame.init()
 
+DEBUG = False
+
 class GameInformation:
     def __init__(self, left_hits, right_hits, left_score, right_score):
         self.left_hits = left_hits
@@ -71,15 +73,15 @@ class Game:
         right_paddle = self.right_paddle
 
         if ball.y + ball.RADIUS >= self.window_height:
-            print(f"[top] vel: {ball.y_vel},  pos: ({ball.x, ball.y})")
+            if DEBUG: print(f"[top] vel: {ball.y_vel},  pos: ({ball.x, ball.y})")
             ball.y = self.window_height - ball.RADIUS
             ball.y_vel = -abs(ball.y_vel)
-            print(f"[top]: INVERT: {ball.y_vel}, pos: ({ball.x, ball.y})")
+            if DEBUG: print(f"[top]: INVERT: {ball.y_vel}, pos: ({ball.x, ball.y})")
         elif ball.y - ball.RADIUS <= 0:
-            print(f"[btm]: vel: {ball.y_vel}, pos: ({ball.x, ball.y})")
+            if DEBUG: print(f"[btm]: vel: {ball.y_vel}, pos: ({ball.x, ball.y})")
             ball.y = ball.RADIUS
             ball.y_vel = abs(ball.y_vel)
-            print(f"[btm]: INVERT: {ball.y_vel}, pos: ({ball.x, ball.y})")
+            if DEBUG: print(f"[btm]: INVERT: {ball.y_vel}, pos: ({ball.x, ball.y})")
 
         if ball.x_vel < 0:
             if ball.y >= left_paddle.y and ball.y <= left_paddle.y + Paddle.HEIGHT:

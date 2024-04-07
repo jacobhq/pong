@@ -7,6 +7,7 @@ import pygame
 
 from pong import Game
 
+DEBUG = False
 WIDTH, HEIGHT = 700, 500
 MAX_TRAINING_GENS = 50
 
@@ -47,7 +48,7 @@ class PongGame:
                 self.game.move_paddle(left=False, up=False)
 
             game_info = self.game.loop()
-            print(game_info.left_score, game_info.right_score)
+            if DEBUG: print(game_info.left_score, game_info.right_score)
             self.game.draw(True, False)
             pygame.display.update()
 
@@ -100,7 +101,7 @@ class PongGame:
                 break
 
     def calculate_fitness(self, genome1, genome2, game_info, timeout=False):
-        print(
+        if DEBUG: print(
             f"timeout: {timeout}, genome1_left: {(game_info.left_hits + (game_info.left_score * 3) - (game_info.right_score * 3))}, genome2_right: {(game_info.right_hits + (game_info.right_score * 3) - (game_info.left_score * 3))}")
         genome1.fitness += (game_info.left_hits + (game_info.left_score * 3) - (game_info.right_score * 3))
         genome2.fitness += (game_info.right_hits + (game_info.right_score * 3) - (game_info.left_score * 3))
@@ -121,12 +122,12 @@ def eval_genomes(genomes, config):
 
 def run_neat(config):
     # restore from checkpoint
-    p = neat.Checkpointer.restore_checkpoint("fix_collisions_06042024_10")
+    p = neat.Checkpointer.restore_checkpoint("big_pop_06042024_8")
     # p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
-    p.add_reporter(neat.Checkpointer(generation_interval=1, filename_prefix="fix_collisions_06042024_"))
+    p.add_reporter(neat.Checkpointer(generation_interval=1, filename_prefix="big_pop_06042024_"))
 
     # pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), eval_genomes)
     # winner = p.run(pe.evaluate, 500)
