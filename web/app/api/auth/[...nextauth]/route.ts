@@ -1,7 +1,7 @@
 import NextAuth from "next-auth"
 import GithubProvider from "next-auth/providers/github"
 import {Redis} from '@upstash/redis'
-import {UpstashRedisAdapter} from "@auth/upstash-redis-adapter"
+import {UpstashRedisAdapter} from "@next-auth/upstash-redis-adapter"
 import EmailProvider from "next-auth/providers/email"
 
 const redis = new Redis({
