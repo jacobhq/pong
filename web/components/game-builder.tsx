@@ -21,7 +21,7 @@ export function GameBuilder() {
           <div className="space-y-2">
             <div className="space-y-2">
               <Label htmlFor="model">Model</Label>
-              <Select className="w-full max-w-xs" defaultValue="@jhqcat/pong-v0.1.0" id="model">
+              <Select defaultValue="@jhqcat/pong-v0.1.0" id="model">
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select a model" />
                 </SelectTrigger>
