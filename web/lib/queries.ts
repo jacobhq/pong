@@ -17,3 +17,7 @@ export async function getGame(id: string): Promise<Game | null> {
 export async function newGame(payload: Game): Promise<"OK" | Game | null> {
     return await redis.set(`game:${payload.id}`, payload)
 }
+
+export async function delGame(id: string): Promise<number | null> {
+    return await redis.del(`game:${id}`)
+}
