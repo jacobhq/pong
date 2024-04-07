@@ -13,7 +13,6 @@ export default function Signin() {
             csrfToken: await getCsrfToken(),
             email: rawFormData.get("email") as string
         }
-        await fetch("/api/auth/signin/email", {method: "POST", body: formData})
     }
 
     return (
