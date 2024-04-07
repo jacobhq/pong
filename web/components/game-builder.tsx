@@ -5,9 +5,10 @@ import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from "@
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { getServerSession } from "next-auth";
+import {authOptions} from "@/lib/auth";
 
 export async function GameBuilder() {
-  const session = (await getServerSession()) || {};
+  const session = (await getServerSession(authOptions)) || {};
   console.log(session)
 
   return (
@@ -25,7 +26,7 @@ export async function GameBuilder() {
           <div className="space-y-2">
             <Label htmlFor="owner">Owner</Label>
             {/* @ts-ignore */}
-            <Input id="owner" value={session?.user?.email || ""} readOnly />
+            <Input id="owner" value={session ? session?.user?.email : ""} readOnly />
           </div>
           <div className="space-y-2">
             <div className="space-y-2">
