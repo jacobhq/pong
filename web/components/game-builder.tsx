@@ -24,7 +24,7 @@ export async function GameBuilder() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="owner">Owner</Label>
-            /* @ts-ignore */
+            {/* @ts-ignore */}
             <Input id="owner" value={session?.user?.email || ""} readOnly />
           </div>
           <div className="space-y-2">
