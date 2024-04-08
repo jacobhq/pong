@@ -1,6 +1,5 @@
 import {UpstashRedisAdapter} from "@next-auth/upstash-redis-adapter";
 import EmailProvider from "next-auth/providers/email";
-import GithubProvider from "next-auth/providers/github";
 import {Redis} from "@upstash/redis";
 
 const redis = new Redis({
@@ -9,10 +8,11 @@ const redis = new Redis({
 })
 
 export const authOptions = {
+    secret: process.env.NEXTAUTH_SECRET as string,
     adapter: UpstashRedisAdapter(redis),
     callbacks: {
         // @ts-expect-error
-        async session({session, token, user}) {
+        async session({session, user}) {
             // Send properties to the client, like an access_token and user id from a provider.
             session.user.id = user.id
 
@@ -24,11 +24,11 @@ export const authOptions = {
             server: process.env.EMAIL_SERVER,
             from: process.env.EMAIL_FROM
         }),
-        GithubProvider({
-            // TODO: GITHUB APP
-            clientId: process.env.GITHUB_ID as string,
-            clientSecret: process.env.GITHUB_SECRET as string,
-        })
-        // ...add more providers here
+        // GithubProvider({
+        //     // TODO: GITHUB APP
+        //     clientId: process.env.GITHUB_ID as string,
+        //     clientSecret: process.env.GITHUB_SECRET as string,
+        // })
+        // // ...add more providers here
     ]
 }
