@@ -12,5 +12,5 @@ export async function POST(request: Request, {params}: { params: { id: string } 
 
     await newPlayer(params.id, body.displayName)
 
-    return game.model
+    return new Response(game.model)
 }
