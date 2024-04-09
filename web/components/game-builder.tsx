@@ -27,6 +27,7 @@ export async function GameBuilder() {
       name: formData.name,
       owner: session ? session.user.id : "",
       model: await getModel(formData.model) as string,
+      state: "lobby"
     }
 
     await newGame(game).catch((err) => {
