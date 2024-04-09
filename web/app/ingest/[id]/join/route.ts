@@ -1,5 +1,6 @@
-import {getGame, newPlayer} from "@/lib/queries";
+import {getGame, getPlayer, newPlayer} from "@/lib/queries";
 import {notFound} from "next/navigation";
+import {JoinRes, Player} from "@/lib/types";
 
 export const dynamic = 'force-dynamic' // defaults to auto
 export async function POST(request: Request, {params}: { params: { id: string } }) {
@@ -10,7 +11,14 @@ export async function POST(request: Request, {params}: { params: { id: string } 
         status: 400
     })
 
-    await newPlayer(params.id, body.displayName)
+    const createdPlayer = await newPlayer(params.id, body.displayName)
+    const player = await getPlayer(createdPlayer) as Player
 
-    return new Response(game.model)
+    const res: JoinRes = {
+        gameId: params.id,
+        playerId: player.id,
+        modelUrl: game.model
+    }
+
+    return new Response(JSON.stringify(res))
 }
