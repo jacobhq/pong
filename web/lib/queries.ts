@@ -47,3 +47,10 @@ export async function newPlayer(gameId: string, displayName: string): Promise<st
     await redis.set(`player:${payload.id}`, payload)
     return payload.id
 }
+
+export async function setScore(player: Player, scorer: "player" | "model", scoreModifier: number): Promise<"OK" | Player | null> {
+    if (scorer === "player") player.playerScore = player.playerScore + scoreModifier
+    if (scorer === "model") player.modelScore = player.modelScore + scoreModifier
+
+    return await redis.set(`player:${player.id}`, player, {xx: true})
+}

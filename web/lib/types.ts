@@ -21,3 +21,8 @@ export type JoinRes = {
     gameId: string
     modelUrl: string
 }
+
+export type ScoreRes = {
+    player: number
+    model: number
+}
