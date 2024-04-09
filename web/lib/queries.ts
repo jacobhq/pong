@@ -31,7 +31,11 @@ export async function delGame(id: string, userId: string): Promise<number | null
     return await redis.del(`game:${id}`)
 }
 
-export async function newPlayer(gameId: string, displayName: string): Promise<"OK" | Player | null> {
+export async function getPlayer(id: string): Promise<Player | null> {
+    return await redis.get(`player:${id}`)
+}
+
+export async function newPlayer(gameId: string, displayName: string): Promise<string> {
     const payload: Player = {
         id: generatePlayerId(),
         gameId: gameId,
@@ -40,5 +44,6 @@ export async function newPlayer(gameId: string, displayName: string): Promise<"O
         modelScore: 0
     }
 
-    return await redis.set(`player:${payload.id}`, payload)
+    await redis.set(`player:${payload.id}`, payload)
+    return payload.id
 }

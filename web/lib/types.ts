@@ -15,3 +15,9 @@ export type Player = {
     playerScore: number
     modelScore: number
 }
+
+export type JoinRes = {
+    playerId: string
+    gameId: string
+    modelUrl: string
+}
