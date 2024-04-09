@@ -3,6 +3,7 @@ export type Game = {
     id: string
     name: string
     owner: string
+    state: "lobby" | "ongoing"
     model: string
 }
 
