@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
-    "@next-auth/upstash-redis-adapter": "^3.0.4",
+    "@auth/upstash-redis-adapter": "^1.6.0",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-label": "^2.0.2",
@@ -23,7 +23,7 @@
     "lucide-react": "^0.365.0",
     "nanoid": "^5.0.6",
     "next": "14.1.4",
-    "next-auth": "^4.24.7",
+    "next-auth": "5.0.0-beta.16",
     "nodemailer": "^6.9.13",
     "react": "^18",
     "react-dom": "^18",
