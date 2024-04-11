@@ -4,15 +4,14 @@ import { Input } from "@/components/ui/input"
 import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { getServerSession } from "next-auth";
-import {authOptions} from "@/lib/auth";
+import { auth } from "@/lib/auth"
 import {generateGameId} from "@/lib/id";
 import {Game} from "@/lib/types";
 import {getModel, newGame} from "@/lib/queries";
 import {redirect} from "next/navigation";
 
 export async function GameBuilder() {
-  const session = (await getServerSession(authOptions)) || {};
+  const session = await auth()
 
   async function createGame(rawFormData: FormData) {
     'use server'
@@ -25,7 +24,7 @@ export async function GameBuilder() {
     const game: Game = {
       id: generateGameId(),
       name: formData.name,
-      owner: session ? session.user.id : "",
+      owner: session?.user?.id as string,
       model: await getModel(formData.model) as string,
       state: "lobby"
     }

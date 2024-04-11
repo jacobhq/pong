@@ -180,3 +180,7 @@ neat-checkpoint-*
 
 # jetbrains
 .idea/**
+
+# node
+node_modules
+.next
