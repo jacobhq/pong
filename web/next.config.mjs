@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const { withAxiom } = require('next-axiom');
+import {withAxiom} from "next-axiom";
 
 const nextConfig = {};
 
