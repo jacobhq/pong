@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { AxiomWebVitals } from 'next-axiom';
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -16,6 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <AxiomWebVitals />
       <body className={inter.className}>{children}</body>
     </html>
   );
