@@ -9,6 +9,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
     const game = await getGame(params.id, session.user.id as string);
     if (!game) return notFound()
+    if (game.state !== "lobby") return redirect(`/game/${game.id}`)
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-between">

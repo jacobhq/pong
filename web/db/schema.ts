@@ -61,7 +61,7 @@ export const verificationTokens = pgTable(
     })
 )
 
-export const gameStateEnum = pgEnum('state', ['lobby', 'ongoing', 'disabled']);
+export const gameStateEnum = pgEnum('state', ['lobby', 'ongoing', 'archived']);
 
 export const models = pgTable("models", {
     id: text("id").primaryKey(),

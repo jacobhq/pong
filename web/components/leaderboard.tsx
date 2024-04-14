@@ -1,5 +1,5 @@
-import {CardTitle, CardDescription, CardHeader, CardContent, Card} from "@/components/ui/card"
-import {Button} from "@/components/ui/button"
+import { CardTitle, CardDescription, CardHeader, CardContent, Card } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import {
     Dialog,
     DialogContent,
@@ -9,10 +9,14 @@ import {
     DialogTrigger
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton"
+import { PlayerCount } from "./player-count";
+import { playerCount } from "@/lib/queries";
 
-export function Leaderboard({id}: { id: string }) {
+export async function Leaderboard({ id }: { id: string }) {
+    const initialCount = await playerCount(id)
+
     return (
-        <div className="flex flex-col items-center justify-center h-screen w-full">
+        <div className="flex flex-col items-center justify-center h-screen w-full space-y-4">
             <Card className="w-full max-w-4xl">
                 <CardHeader className="flex flex-row items-between space-x-2 justify-between">
                     <div className="grid gap-0.5">
@@ -23,7 +27,7 @@ export function Leaderboard({id}: { id: string }) {
                         <Dialog>
                             <DialogTrigger asChild>
                                 <Button variant="outline"
-                                        className="flex items-center border border-dashed rounded-lg p-4 justify-center">
+                                    className="flex items-center border border-dashed rounded-lg p-4 justify-center">
                                     <div className="text-3xl font-mono font-semibold tracking-tighter">{id}</div>
                                 </Button>
                             </DialogTrigger>
@@ -44,13 +48,13 @@ export function Leaderboard({id}: { id: string }) {
                 <CardContent className="p-0">
                     <div className="flex flex-col w-full text-sm font-medium grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                         <div className="flex flex-row items-center gap-4 p-4 border-t">
-                            <Skeleton className="w-4 h-4 rounded"/>
-                            <Skeleton className="w-12 h-12 rounded-full"/>
+                            <Skeleton className="w-4 h-4 rounded" />
+                            <Skeleton className="w-12 h-12 rounded-full" />
                             <div className="grid gap-0.5">
-                                <Skeleton className="h-4 w-[250px]"/>
-                                <Skeleton className="h-4 w-[200px]"/>
+                                <Skeleton className="h-4 w-[250px]" />
+                                <Skeleton className="h-4 w-[200px]" />
                             </div>
-                            <Skeleton className="h-6 w-16 ml-auto"/>
+                            <Skeleton className="h-6 w-16 ml-auto" />
                         </div>
                         <div className="flex flex-row items-center gap-4 p-4 border-t last:border-b">
                             <div className="flex items-center w-4 h-4 text-sm font-medium">2</div>
@@ -139,6 +143,7 @@ export function Leaderboard({id}: { id: string }) {
                     </div>
                 </CardContent>
             </Card>
+            <PlayerCount gameId={id} initialCount={initialCount[0].count.toString()} />
         </div>
     )
 }

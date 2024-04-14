@@ -1,14 +1,8 @@
-import { Redis } from "@upstash/redis";
 import { generatePlayerId } from "@/lib/id";
 import { db } from "@/db/connect";
 import { games, players } from "@/db/schema";
-import { SQLWrapper, and, eq } from "drizzle-orm";
-import { Game, Player } from "./types";
-
-const redis = new Redis({
-    url: process.env.KV_REST_API_URL as string,
-    token: process.env.KV_REST_API_TOKEN as string
-})
+import { and, count, eq } from "drizzle-orm";
+import { Game, GameState, Player } from "./types";
 
 export async function getModelId(name: string): Promise<string | undefined> {
     const model = await db.query.models.findFirst({
@@ -50,10 +44,18 @@ export async function delGame(id: string, userId: string) {
     )
 }
 
+export async function setGameState(id: string, state: GameState) {
+    return await db.update(games).set({ state: state }).where(eq(games.id, id)).returning()
+}
+
 export async function getPlayer(id: string): Promise<Player | undefined> {
     return await db.query.players.findFirst({
         where: eq(players.id, id)
     })
+}
+
+export async function playerCount(gameId: string) {
+    return await db.select({ count: count() }).from(players).where(eq(players.gameId, gameId))
 }
 
 export async function newPlayer(gameId: string, displayName: string): Promise<string> {

@@ -88,7 +88,7 @@ export default async function Dashboard() {
                                         </TableCell>
                                         <TableCell className="flex flex-col md:flex-row space-x-2">
                                             <Button variant="outline" asChild>
-                                                <Link href={`/game/${game.id}/lobby`}>Enter lobby</Link>
+                                                <Link href={`/game/${game.id}${game.state === "lobby" ? "/lobby" : ""}`}>{game.state === "lobby" ? "Enter lobby" : "View leaderboard"}</Link>
                                             </Button>
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>

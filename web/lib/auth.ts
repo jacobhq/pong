@@ -6,6 +6,7 @@ import { db } from "@/db/connect";
 export const { handlers, auth, signIn, signOut } = NextAuth({
     secret: process.env.NEXTAUTH_SECRET as string,
     adapter: DrizzleAdapter(db),
+    trustHost: true,
     callbacks: {
         async session({ session, user }) {
             // Send properties to the client, like an access_token and user id from a provider.
