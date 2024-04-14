@@ -1,7 +1,7 @@
 import { generatePlayerId } from "@/lib/id";
 import { db } from "@/db/connect";
 import { games, players } from "@/db/schema";
-import { and, count, eq } from "drizzle-orm";
+import { and, count, desc, eq } from "drizzle-orm";
 import { Game, GameState, Player } from "./types";
 
 export async function getModelId(name: string): Promise<string | undefined> {
@@ -54,6 +54,14 @@ export async function getPlayer(id: string): Promise<Player | undefined> {
     })
 }
 
+export async function getTopFivePlayers(gameId: string) {
+    return await db.query.players.findMany({
+        where: eq(players.gameId, gameId),
+        limit: 5,
+        orderBy: desc(players.grading)
+    })
+}
+
 export async function playerCount(gameId: string) {
     return await db.select({ count: count() }).from(players).where(eq(players.gameId, gameId))
 }
@@ -65,7 +73,8 @@ export async function newPlayer(gameId: string, displayName: string): Promise<st
         gameId: gameId,
         displayName: displayName,
         playerScore: 0,
-        modelScore: 0
+        modelScore: 0,
+        grading: 0
     }
 
     const player = await db.insert(players).values(payload).returning()

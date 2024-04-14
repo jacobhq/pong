@@ -10,10 +10,14 @@ import {
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton"
 import { PlayerCount } from "./player-count";
-import { playerCount } from "@/lib/queries";
+import { getTopFivePlayers, playerCount } from "@/lib/queries";
+import { LeaderboardRanking } from "./leaderboard-ranking";
+import { PathParamsContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
 
 export async function Leaderboard({ id }: { id: string }) {
     const initialCount = await playerCount(id)
+    const rawPlayers = await getTopFivePlayers(id)
+    const players = rawPlayers.map((item, index) => ({ index, ...item }));
 
     return (
         <div className="flex flex-col items-center justify-center h-screen w-full space-y-4">
@@ -47,99 +51,7 @@ export async function Leaderboard({ id }: { id: string }) {
                 </CardHeader>
                 <CardContent className="p-0">
                     <div className="flex flex-col w-full text-sm font-medium grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                        <div className="flex flex-row items-center gap-4 p-4 border-t">
-                            <Skeleton className="w-4 h-4 rounded" />
-                            <Skeleton className="w-12 h-12 rounded-full" />
-                            <div className="grid gap-0.5">
-                                <Skeleton className="h-4 w-[250px]" />
-                                <Skeleton className="h-4 w-[200px]" />
-                            </div>
-                            <Skeleton className="h-6 w-16 ml-auto" />
-                        </div>
-                        <div className="flex flex-row items-center gap-4 p-4 border-t last:border-b">
-                            <div className="flex items-center w-4 h-4 text-sm font-medium">2</div>
-                            <div className="flex items-center w-12 h-12">
-                                <img
-                                    alt="Avatar"
-                                    className="rounded-full"
-                                    height="48"
-                                    src="/placeholder.svg"
-                                    style={{
-                                        aspectRatio: "48/48",
-                                        objectFit: "cover",
-                                    }}
-                                    width="48"
-                                />
-                            </div>
-                            <div className="grid gap-0.5">
-                                <div className="text-sm font-semibold">Ava Adams</div>
-                                <div className="text-xs text-gray-500 dark:text-gray-400">@avaadams</div>
-                            </div>
-                            <div className="ml-auto text-2xl font-semibold">1100</div>
-                        </div>
-                        <div className="flex flex-row items-center gap-4 p-4 border-t">
-                            <div className="flex items-center w-4 h-4 text-sm font-medium">3</div>
-                            <div className="flex items-center w-12 h-12">
-                                <img
-                                    alt="Avatar"
-                                    className="rounded-full"
-                                    height="48"
-                                    src="/placeholder.svg"
-                                    style={{
-                                        aspectRatio: "48/48",
-                                        objectFit: "cover",
-                                    }}
-                                    width="48"
-                                />
-                            </div>
-                            <div className="grid gap-0.5">
-                                <div className="text-sm font-semibold">Mia Moore</div>
-                                <div className="text-xs text-gray-500 dark:text-gray-400">@miamoore</div>
-                            </div>
-                            <div className="ml-auto text-2xl font-semibold">1000</div>
-                        </div>
-                        <div className="flex flex-row items-center gap-4 p-4 border-t">
-                            <div className="flex items-center w-4 h-4 text-sm font-medium">4</div>
-                            <div className="flex items-center w-12 h-12">
-                                <img
-                                    alt="Avatar"
-                                    className="rounded-full"
-                                    height="48"
-                                    src="/placeholder.svg"
-                                    style={{
-                                        aspectRatio: "48/48",
-                                        objectFit: "cover",
-                                    }}
-                                    width="48"
-                                />
-                            </div>
-                            <div className="grid gap-0.5">
-                                <div className="text-sm font-semibold">Liam Lee</div>
-                                <div className="text-xs text-gray-500 dark:text-gray-400">@liamlee</div>
-                            </div>
-                            <div className="ml-auto text-2xl font-semibold">950</div>
-                        </div>
-                        <div className="flex flex-row items-center gap-4 p-4 border-t">
-                            <div className="flex items-center w-4 h-4 text-sm font-medium">5</div>
-                            <div className="flex items-center w-12 h-12">
-                                <img
-                                    alt="Avatar"
-                                    className="rounded-full"
-                                    height="48"
-                                    src="/placeholder.svg"
-                                    style={{
-                                        aspectRatio: "48/48",
-                                        objectFit: "cover",
-                                    }}
-                                    width="48"
-                                />
-                            </div>
-                            <div className="grid gap-0.5">
-                                <div className="text-sm font-semibold">Noah Nelson</div>
-                                <div className="text-xs text-gray-500 dark:text-gray-400">@noahnelson</div>
-                            </div>
-                            <div className="ml-auto text-2xl font-semibold">900</div>
-                        </div>
+                        <LeaderboardRanking id={id} initialPlayers={players} />
                     </div>
                 </CardContent>
             </Card>

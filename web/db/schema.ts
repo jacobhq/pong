@@ -87,6 +87,9 @@ export const players = pgTable("players", {
         .default(0),
     modelScore: integer("modelScore")
         .notNull()
+        .default(0),
+    grading: integer("grading")
+        .notNull()
         .default(0)
 })
 
