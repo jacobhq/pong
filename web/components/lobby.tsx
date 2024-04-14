@@ -29,7 +29,6 @@ export function Lobby({id}: { id: string }) {
                     <div className="flex flex-row m-0 items-center">
                         <Button size="lg">
                             Start game
-
                         </Button>
                     </div>
                 </CardHeader>

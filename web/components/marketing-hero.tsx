@@ -1,6 +1,6 @@
-import {Input} from "@/components/ui/input"
-import {Button} from "@/components/ui/button"
-import {signIn} from "@/lib/auth";
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { signIn } from "@/lib/auth";
 
 export function MarketingHero() {
     return (
@@ -20,10 +20,10 @@ export function MarketingHero() {
                     <div className="w-full max-w-sm space-y-2">
                         <form className="flex space-x-2" action={async (formData) => {
                             "use server"
-                            await signIn("resend", formData)
+                            await signIn("resend", { ...formData, redirectTo: "/game" })
                         }}
                         >
-                            <Input className="max-w-lg flex-1 h-16 px-6" placeholder="Enter your email" type="email" name="email"/>
+                            <Input className="max-w-lg flex-1 h-16 px-6" placeholder="Enter your email" type="email" name="email" />
                             <Button className="h-16 text-md font-semibold" size="lg" type="submit">
                                 Sign Up
                             </Button>
