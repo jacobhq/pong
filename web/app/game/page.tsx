@@ -76,7 +76,7 @@ export default async function Dashboard() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {games.map((game) => (<TableRow>
+                                    {games.map((game) => (<TableRow key={game.id}>
                                         <TableCell className="font-medium">
                                             {game.name}
                                         </TableCell>
