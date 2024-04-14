@@ -30,13 +30,20 @@ import {
 } from "@/components/ui/table"
 import { ProductNav } from "@/components/product-nav"
 import Link from "next/link"
+import { redirect } from "next/navigation"
+import { getGames } from "@/lib/queries"
+import { auth } from "@/lib/auth"
 
-export default function Dashboard() {
+export default async function Dashboard() {
+    const session = await auth()
+    if (!session || !session.user) return redirect("/")
+    const games = await getGames(session.user.id!)
+
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
             <ProductNav />
-            <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-                <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+            <div className="flex flex-col gap-4 sm:py-4 min-h-full flex-grow">
+                <main className="flex flex-col min-h-full flex-grow items-end space-4 p-4 sm:px-6 sm:py-0 gap-8">
                     <div className="flex items-center">
                         <div className="ml-auto w-full sm:w-auto flex items-center gap-2">
                             <Button size="lg" className="gap-2" asChild>
@@ -47,15 +54,15 @@ export default function Dashboard() {
                             </Button>
                         </div>
                     </div>
-                    <Card>
+                    <Card className="flex flex-col h-full flex-grow min-w-full justify-between">
                         <CardHeader>
                             <CardTitle>Games</CardTitle>
                             <CardDescription>
                                 Manage your games and or create a new one.
                             </CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <Table>
+                        <CardContent className="mb-auto">
+                            {games[0] ? <Table>
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>Name</TableHead>
@@ -69,18 +76,20 @@ export default function Dashboard() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    <TableRow>
+                                    {games.map((game) => (<TableRow>
                                         <TableCell className="font-medium">
-                                            Laser Lemonade Machine
+                                            {game.name}
                                         </TableCell>
                                         <TableCell>
-                                            <Badge variant="outline">Draft</Badge>
+                                            <Badge variant="outline" className="capitalize">{game.state}</Badge>
                                         </TableCell>
                                         <TableCell className="hidden md:table-cell">
-                                            @jhqcat/pong-v0.2.1
+                                            {game.model}
                                         </TableCell>
                                         <TableCell className="flex flex-col md:flex-row space-x-2">
-                                            <Button variant="outline">Enter lobby</Button>
+                                            <Button variant="outline" asChild>
+                                                <Link href={`/game/${game.id}/lobby`}>Enter lobby</Link>
+                                            </Button>
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
                                                     <Button
@@ -100,9 +109,19 @@ export default function Dashboard() {
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </TableCell>
-                                    </TableRow>
+                                    </TableRow>))}
                                 </TableBody>
-                            </Table>
+                            </Table> : <div className="flex flex-col items-center justify-center gap-1 text-center min-h-full">
+                                <h3 className="text-2xl font-bold tracking-tight">
+                                    You have no games
+                                </h3>
+                                <p className="text-sm text-muted-foreground">
+                                    You can start selling as soon as you add a product.
+                                </p>
+                                <Button className="mt-4" variant="outline" asChild>
+                                    <Link href="/game/new">New Game</Link>
+                                </Button>
+                            </div>}
                         </CardContent>
                         <CardFooter>
                             <div className="text-xs text-muted-foreground">

@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { auth } from "@/lib/auth"
 import { generateGameId } from "@/lib/id";
-import { getModelId, newGame } from "@/lib/queries";
+import { getModelId, getModelUrl, newGame } from "@/lib/queries";
 import { redirect } from "next/navigation";
-import { Game } from "@/lib/types"
+import { Game, Model } from "@/lib/types"
 
 export async function GameBuilder() {
   const session = await auth()
@@ -21,11 +21,16 @@ export async function GameBuilder() {
       model: rawFormData.get('model') as string,
     }
 
+    const model = await getModelId(formData.model)
+
+    console.log(formData, model)
+
     const game: Game = {
       id: generateGameId(),
       name: formData.name,
       owner: session?.user?.id as string,
-      model: await getModelId(formData.model) as string,
+      modelName: formData.model,
+      model: model!,
       state: "lobby"
     }
 

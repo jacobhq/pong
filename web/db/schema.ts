@@ -5,13 +5,9 @@ import {
     primaryKey,
     integer,
     pgEnum,
-    uniqueIndex,
-    uuid,
-    varchar,
-    boolean,
+    boolean
 } from "drizzle-orm/pg-core"
 import type { AdapterAccount } from "next-auth/adapters"
-import { InferSelectModel } from "drizzle-orm";
 
 export const users = pgTable("user", {
     id: text("id").notNull().primaryKey(),
@@ -69,7 +65,7 @@ export const gameStateEnum = pgEnum('state', ['lobby', 'ongoing', 'disabled']);
 
 export const models = pgTable("models", {
     id: text("id").primaryKey(),
-    name: text('name').notNull(),
+    name: text('name').notNull().unique(),
     downloadUrl: text("downloadUrl").notNull(),
     public: boolean("public").default(false).notNull(),
     owner: text("owner")
@@ -104,4 +100,5 @@ export const games = pgTable('games', {
     model: text("model")
         .notNull()
         .references(() => models.id),
+    modelName: text("modelName").notNull()
 })

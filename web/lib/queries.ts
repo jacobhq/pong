@@ -2,7 +2,7 @@ import { Redis } from "@upstash/redis";
 import { generatePlayerId } from "@/lib/id";
 import { db } from "@/db/connect";
 import { games, players } from "@/db/schema";
-import { and, eq } from "drizzle-orm";
+import { SQLWrapper, and, eq } from "drizzle-orm";
 import { Game, Player } from "./types";
 
 const redis = new Redis({
@@ -29,6 +29,12 @@ export async function getModelUrl(name: string): Promise<string | undefined> {
 export async function getGame(id: string, userId?: string, internal?: boolean): Promise<Game | undefined> {
     return await db.query.games.findFirst({
         where: (game, { and, eq }) => and((eq(game.id, id)), !internal && userId ? (eq(game.owner, userId)) : undefined)
+    })
+}
+
+export async function getGames(userId: string): Promise<Game[]> {
+    return await db.query.games.findMany({
+        where: (eq(games.owner, userId))
     })
 }
 
