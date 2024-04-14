@@ -1,7 +1,7 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
 import Resend from "next-auth/providers/resend";
 import NextAuth from "next-auth";
-import { db } from "@/db/schema";
+import { db } from "@/db/connect";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     secret: process.env.NEXTAUTH_SECRET as string,

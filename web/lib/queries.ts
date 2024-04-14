@@ -1,56 +1,74 @@
-import {Redis} from "@upstash/redis";
-import {Game, Player} from "@/lib/types";
-import {generatePlayerId} from "@/lib/id";
+import { Redis } from "@upstash/redis";
+import { generatePlayerId } from "@/lib/id";
+import { db } from "@/db/connect";
+import { games, players } from "@/db/schema";
+import { and, eq } from "drizzle-orm";
+import { Game, Player } from "./types";
 
 const redis = new Redis({
     url: process.env.KV_REST_API_URL as string,
     token: process.env.KV_REST_API_TOKEN as string
 })
 
-export async function getModel(id: string): Promise<string | null> {
-    return await redis.get(`model:${id}`)
+export async function getModelId(name: string): Promise<string | undefined> {
+    const model = await db.query.models.findFirst({
+        where: (model, { eq }) => (eq(model.name, name))
+    })
+    if (!model) return undefined
+    return model.id
 }
 
-export async function getGame(id: string, userId?: string, internal?: boolean): Promise<Game | null> {
-    const game: Game | null = await redis.get(`game:${id}`)
-
-    if (!game) return null
-    if ((game.owner !== userId) && !internal) return null
-    return game
+export async function getModelUrl(name: string): Promise<string | undefined> {
+    const model = await db.query.models.findFirst({
+        where: (model, { eq }) => (eq(model.name, name))
+    })
+    if (!model) return undefined
+    return model.downloadUrl
 }
 
-export async function newGame(payload: Game): Promise<"OK" | Game | null> {
-    return await redis.set(`game:${payload.id}`, payload)
+export async function getGame(id: string, userId?: string, internal?: boolean): Promise<Game | undefined> {
+    return await db.query.games.findFirst({
+        where: (game, { and, eq }) => and((eq(game.id, id)), !internal && userId ? (eq(game.owner, userId)) : undefined)
+    })
 }
 
-export async function delGame(id: string, userId: string): Promise<number | null> {
-    const game: Game | null = await redis.get(`game:${id}`)
-    if (!game) return null
-    if (game.owner !== userId) return null
-
-    return await redis.del(`game:${id}`)
+export async function newGame(payload: Game) {
+    return await db.insert(games).values({
+        ...payload
+    })
 }
 
-export async function getPlayer(id: string): Promise<Player | null> {
-    return await redis.get(`player:${id}`)
+export async function delGame(id: string, userId: string) {
+    return await db.delete(games).where(
+        and((eq(games.id, id)), (eq(games.owner, userId)))
+    )
+}
+
+export async function getPlayer(id: string): Promise<Player | undefined> {
+    return await db.query.players.findFirst({
+        where: eq(players.id, id)
+    })
 }
 
 export async function newPlayer(gameId: string, displayName: string): Promise<string> {
     const payload: Player = {
         id: generatePlayerId(),
+        userId: null,
         gameId: gameId,
         displayName: displayName,
         playerScore: 0,
         modelScore: 0
     }
 
-    await redis.set(`player:${payload.id}`, payload)
-    return payload.id
+    const player = await db.insert(players).values(payload).returning()
+    return player[0].id
 }
 
-export async function setScore(player: Player, scorer: "player" | "model", scoreModifier: number): Promise<"OK" | Player | null> {
+export async function setScore(player: Player, scorer: "player" | "model", scoreModifier: number) {
     if (scorer === "player") player.playerScore = player.playerScore + scoreModifier
     if (scorer === "model") player.modelScore = player.modelScore + scoreModifier
 
-    return await redis.set(`player:${player.id}`, player, {xx: true})
+    return await db.update(players).set(
+        scorer === "player" ? { playerScore: player.playerScore } : { modelScore: player.modelScore }
+    )
 }

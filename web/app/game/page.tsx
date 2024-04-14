@@ -79,7 +79,7 @@ export default function Dashboard() {
                                         <TableCell className="hidden md:table-cell">
                                             @jhqcat/pong-v0.2.1
                                         </TableCell>
-                                        <TableCell className="flex flex-col md:flex-row space-x-1">
+                                        <TableCell className="flex flex-col md:flex-row space-x-2">
                                             <Button variant="outline">Enter lobby</Button>
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>

@@ -1,21 +1,9 @@
-// DB = `game:${id}`
-export type Game = {
-    id: string
-    name: string
-    owner: string
-    state: "lobby" | "ongoing"
-    model: string
-}
+import { games, models, players } from "@/db/schema"
+import { InferSelectModel } from "drizzle-orm"
 
-// DB = `player:${id}`
-export type Player = {
-    id: string
-    gameId: string
-    userId?: string
-    displayName: string
-    playerScore: number
-    modelScore: number
-}
+export type Model = InferSelectModel<typeof models>
+export type Player = InferSelectModel<typeof players>
+export type Game = InferSelectModel<typeof games>
 
 export type JoinRes = {
     playerId: string

@@ -11,12 +11,7 @@ import {
     boolean,
 } from "drizzle-orm/pg-core"
 import type { AdapterAccount } from "next-auth/adapters"
-import { drizzle } from 'drizzle-orm/vercel-postgres';
-import { sql } from '@vercel/postgres';
 import { InferSelectModel } from "drizzle-orm";
-
-// Use this object to send drizzle queries to your DB
-export const db = drizzle(sql);
 
 export const users = pgTable("user", {
     id: text("id").notNull().primaryKey(),
@@ -74,9 +69,9 @@ export const gameStateEnum = pgEnum('state', ['lobby', 'ongoing', 'disabled']);
 
 export const models = pgTable("models", {
     id: text("id").primaryKey(),
-    name: text('name'),
-    downloadUrl: text("downloadUrl"),
-    public: boolean("public").default(false),
+    name: text('name').notNull(),
+    downloadUrl: text("downloadUrl").notNull(),
+    public: boolean("public").default(false).notNull(),
     owner: text("owner")
         .references(() => users.id, { onDelete: "cascade" }),
 })
@@ -110,7 +105,3 @@ export const games = pgTable('games', {
         .notNull()
         .references(() => models.id),
 })
-
-export type Model = InferSelectModel<typeof models>
-export type Player = InferSelectModel<typeof players>
-export type Game = InferSelectModel<typeof games>
