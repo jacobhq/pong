@@ -1,18 +1,13 @@
-import {UpstashRedisAdapter} from "@auth/upstash-redis-adapter";
+import { DrizzleAdapter } from "@auth/drizzle-adapter"
 import Resend from "next-auth/providers/resend";
-import {Redis} from "@upstash/redis";
 import NextAuth from "next-auth";
-
-const redis = new Redis({
-    url: process.env.KV_REST_API_URL as string,
-    token: process.env.KV_REST_API_TOKEN as string
-})
+import { db } from "@/db/schema";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     secret: process.env.NEXTAUTH_SECRET as string,
-    adapter: UpstashRedisAdapter(redis),
+    adapter: DrizzleAdapter(db),
     callbacks: {
-        async session({session, user}) {
+        async session({ session, user }) {
             // Send properties to the client, like an access_token and user id from a provider.
             session.user.id = user.id
 

@@ -73,7 +73,7 @@ export const verificationTokens = pgTable(
 export const gameStateEnum = pgEnum('state', ['lobby', 'ongoing', 'disabled']);
 
 export const models = pgTable("models", {
-    id: uuid("id").primaryKey(),
+    id: text("id").primaryKey(),
     name: text('name'),
     downloadUrl: text("downloadUrl"),
     public: boolean("public").default(false),
@@ -82,7 +82,7 @@ export const models = pgTable("models", {
 })
 
 export const players = pgTable("players", {
-    id: uuid("id").primaryKey(),
+    id: text("id").primaryKey(),
     displayName: text('displayName')
         .unique()
         .notNull(),
@@ -100,7 +100,7 @@ export const players = pgTable("players", {
 })
 
 export const games = pgTable('games', {
-    id: uuid("id").primaryKey(),
+    id: text("id").primaryKey(),
     name: text('name'),
     owner: text("owner")
         .notNull()

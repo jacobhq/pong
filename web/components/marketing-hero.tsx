@@ -20,7 +20,7 @@ export function MarketingHero() {
                     <div className="w-full max-w-sm space-y-2">
                         <form className="flex space-x-2" action={async (formData) => {
                             "use server"
-                            await signIn("resend", { ...formData, redirectTo: "/game" })
+                            await signIn("resend", formData)
                         }}
                         >
                             <Input className="max-w-lg flex-1 h-16 px-6" placeholder="Enter your email" type="email" name="email" />
