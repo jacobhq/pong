@@ -84,7 +84,7 @@ export default async function Dashboard() {
                                             <Badge variant="outline" className="capitalize">{game.state}</Badge>
                                         </TableCell>
                                         <TableCell className="hidden md:table-cell">
-                                            {game.model}
+                                            {game.modelName}
                                         </TableCell>
                                         <TableCell className="flex flex-col md:flex-row space-x-2">
                                             <Button variant="outline" asChild>
