@@ -22,6 +22,13 @@
       "when": 1713112606004,
       "tag": "0002_closed_iron_fist",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1713124304634,
+      "tag": "0003_square_wither",
+      "breakpoints": true
     }
   ]
 }
