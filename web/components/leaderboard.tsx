@@ -8,11 +8,9 @@ import {
     DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog";
-import { Skeleton } from "@/components/ui/skeleton"
 import { PlayerCount } from "./player-count";
 import { getTopFivePlayers, playerCount } from "@/lib/queries";
 import { LeaderboardRanking } from "./leaderboard-ranking";
-import { PathParamsContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
 
 export async function Leaderboard({ id }: { id: string }) {
     const initialCount = await playerCount(id)
