@@ -1,7 +1,14 @@
+import json
+from typing import TypeAlias
+
+import requests
+
 from .paddle import Paddle
 from .ball import Ball
 import pygame
 import random
+
+from .types import JoinRes
 
 pygame.init()
 
@@ -28,7 +35,7 @@ class Game:
     BLACK = (0, 0, 0)
     RED = (255, 0, 0)
 
-    def __init__(self, window, window_width, window_height):
+    def __init__(self, window, window_width, window_height, ingest_url):
         self.window_width = window_width
         self.window_height = window_height
 
@@ -43,6 +50,8 @@ class Game:
         self.left_hits = 0
         self.right_hits = 0
         self.window = window
+
+        self.ingest_url = ingest_url
 
     def _draw_score(self):
         left_score_text = self.SCORE_FONT.render(

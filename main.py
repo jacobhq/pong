@@ -11,13 +11,14 @@ DEBUG = False
 WIDTH, HEIGHT = 700, 500
 MAX_TRAINING_GENS = 50
 
-
 class PongGame:
-    def __init__(self, window, width, height):
-        self.game = Game(window, width, height)
+    def __init__(self, window, width, height, ingest_url, game_id):
+        self.game = Game(window, width, height, ingest_url)
         self.left_paddle = self.game.left_paddle
         self.right_paddle = self.game.right_paddle
         self.ball = self.game.ball
+        self.ingest_url = ingest_url
+        self.game_id = game_id
 
     def test_ai(self, genome, config):
         net = neat.nn.FeedForwardNetwork.create(genome, config)
@@ -122,7 +123,7 @@ def eval_genomes(genomes, config):
 
 def run_neat(config):
     # restore from checkpoint
-    p = neat.Checkpointer.restore_checkpoint("big_pop_06042024_8")
+    p = neat.Checkpointer.restore_checkpoint("pop250_geforce_06042024_15")
     # p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
@@ -138,13 +139,13 @@ def run_neat(config):
         pickle.dump(winner, f)
 
 
-def test_ai(config):
-    with open("best.pickle", "rb") as f:
+def test_ai(config, ingest_url, game_id):
+    with open(f"{game_id}.pickle", "rb") as f:
         winner = pickle.load(f)
 
     window = pygame.display.set_mode((WIDTH, HEIGHT))
 
-    game = PongGame(window, WIDTH, HEIGHT)
+    game = PongGame(window, WIDTH, HEIGHT, ingest_url, game_id)
     game.test_ai(winner, config)
 
 
