@@ -22,7 +22,6 @@ headers = {
     'Content-Type': 'application/json'
 }
 response = requests.request("POST", f"{INGEST_URL}/join", headers=headers, data=payload)
-print(response.text)
 player: JoinRes = json.loads(response.text)
 model_url = player['modelUrl']
 model_res = requests.get(model_url, allow_redirects=True)
@@ -40,4 +39,4 @@ else:
 
 config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation,
                      config_path)
-test_ai(config, INGEST_URL, GAME_ID)
+test_ai(config, INGEST_URL, GAME_ID, server_data=player)

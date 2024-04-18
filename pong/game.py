@@ -1,18 +1,37 @@
 import json
-from typing import TypeAlias
+import random
+import threading
 
+import pygame
 import requests
 
-from .paddle import Paddle
 from .ball import Ball
-import pygame
-import random
-
+from .paddle import Paddle
 from .types import JoinRes
 
 pygame.init()
 
 DEBUG = False
+
+
+def make_post_request(url, payload):
+    try:
+        response = requests.post(url, json=payload)
+        response.raise_for_status()  # Raise an exception for non-2xx status codes
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"HTTP request failed: {e}")
+        return None
+
+# Function to handle the HTTP POST request in a separate thread
+def handle_post_request(url, payload):
+    result = make_post_request(url, payload)
+    if result is not None:
+        print("Received data:", result)
+        # Process the received data as needed
+    else:
+        print("Failed to fetch data.")
+
 
 class GameInformation:
     def __init__(self, left_hits, right_hits, left_score, right_score):
@@ -35,14 +54,14 @@ class Game:
     BLACK = (0, 0, 0)
     RED = (255, 0, 0)
 
-    def __init__(self, window, window_width, window_height, ingest_url):
+    def __init__(self, window, window_width, window_height, ingest_url, server_data: JoinRes):
         self.window_width = window_width
         self.window_height = window_height
 
         self.left_paddle = Paddle(
             10, self.window_height // 2 - Paddle.HEIGHT // 2)
         self.right_paddle = Paddle(
-            self.window_width - 10 - Paddle.WIDTH, self.window_height // 2 - Paddle.HEIGHT//2)
+            self.window_width - 10 - Paddle.WIDTH, self.window_height // 2 - Paddle.HEIGHT // 2)
         self.ball = Ball(self.window_width // 2, self.window_height // 2)
 
         self.left_score = 0
@@ -52,6 +71,7 @@ class Game:
         self.window = window
 
         self.ingest_url = ingest_url
+        self.server_data: JoinRes = server_data
 
     def _draw_score(self):
         left_score_text = self.SCORE_FONT.render(
@@ -59,22 +79,22 @@ class Game:
         right_score_text = self.SCORE_FONT.render(
             f"{self.right_score}", 1, self.WHITE)
         self.window.blit(left_score_text, (self.window_width //
-                                           4 - left_score_text.get_width()//2, 20))
-        self.window.blit(right_score_text, (self.window_width * (3/4) -
-                                            right_score_text.get_width()//2, 20))
+                                           4 - left_score_text.get_width() // 2, 20))
+        self.window.blit(right_score_text, (self.window_width * (3 / 4) -
+                                            right_score_text.get_width() // 2, 20))
 
     def _draw_hits(self):
         hits_text = self.SCORE_FONT.render(
             f"{self.left_hits + self.right_hits}", 1, self.RED)
         self.window.blit(hits_text, (self.window_width //
-                                     2 - hits_text.get_width()//2, 10))
+                                     2 - hits_text.get_width() // 2, 10))
 
     def _draw_divider(self):
-        for i in range(10, self.window_height, self.window_height//20):
+        for i in range(10, self.window_height, self.window_height // 20):
             if i % 2 == 1:
                 continue
             pygame.draw.rect(
-                self.window, self.WHITE, (self.window_width//2 - 5, i, 10, self.window_height//20))
+                self.window, self.WHITE, (self.window_width // 2 - 5, i, 10, self.window_height // 20))
 
     def _handle_collision(self):
         ball = self.ball
@@ -103,6 +123,7 @@ class Game:
                     y_vel = difference_in_y / reduction_factor
                     ball.y_vel = -1 * y_vel + random.uniform(-1, 1)
                     self.left_hits += 1
+
 
         else:
             if ball.y >= right_paddle.y and ball.y <= right_paddle.y + Paddle.HEIGHT:
@@ -168,9 +189,19 @@ class Game:
         if self.ball.x < 0:
             self.ball.reset()
             self.right_score += 1
+            post_thread = threading.Thread(target=handle_post_request, args=(self.ingest_url, {
+                "playerId": self.server_data["playerId"],
+                "scorer": "model"
+            }))
+            post_thread.start()
         elif self.ball.x > self.window_width:
             self.ball.reset()
             self.left_score += 1
+            post_thread = threading.Thread(target=handle_post_request, args=(self.ingest_url, {
+                "playerId": self.server_data["playerId"],
+                "scorer": "player"
+            }))
+            post_thread.start()
 
         game_info = GameInformation(
             self.left_hits, self.right_hits, self.left_score, self.right_score)

@@ -6,14 +6,15 @@ import neat
 import pygame
 
 from pong import Game
+from pong.types import JoinRes
 
 DEBUG = False
 WIDTH, HEIGHT = 700, 500
 MAX_TRAINING_GENS = 50
 
 class PongGame:
-    def __init__(self, window, width, height, ingest_url, game_id):
-        self.game = Game(window, width, height, ingest_url)
+    def __init__(self, window, width, height, ingest_url, game_id, server_data: JoinRes):
+        self.game = Game(window, width, height, ingest_url, server_data)
         self.left_paddle = self.game.left_paddle
         self.right_paddle = self.game.right_paddle
         self.ball = self.game.ball
@@ -139,13 +140,13 @@ def run_neat(config):
         pickle.dump(winner, f)
 
 
-def test_ai(config, ingest_url, game_id):
+def test_ai(config, ingest_url, game_id, server_data: JoinRes):
     with open(f"{game_id}.pickle", "rb") as f:
         winner = pickle.load(f)
 
     window = pygame.display.set_mode((WIDTH, HEIGHT))
 
-    game = PongGame(window, WIDTH, HEIGHT, ingest_url, game_id)
+    game = PongGame(window, WIDTH, HEIGHT, ingest_url, game_id, server_data)
     game.test_ai(winner, config)
 
 
