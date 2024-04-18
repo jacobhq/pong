@@ -8,9 +8,9 @@ from main import test_ai
 from pong.types import JoinRes
 
 API_URL = "https://pong.jhqcat.com/ingest"
-GAME_ID = "mdkuvz"
+GAME_ID = "[GAME ID]"
 INGEST_URL = f"{API_URL}/{GAME_ID}"
-DISPLAY_NAME = "Showcase April 19th 2024"
+DISPLAY_NAME = "[ENTER NAME]"
 
 local_dir = os.path.dirname(__file__)
 config_path = os.path.join(local_dir, "config.txt")
