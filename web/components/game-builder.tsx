@@ -67,6 +67,7 @@ export async function GameBuilder() {
                   <SelectValue placeholder="Select a model" />
                 </SelectTrigger>
                 <SelectContent className="w-full max-w-xs">
+                  <SelectItem value="@jhqcat/pong-v0.3.0">@jhqcat/pong-v0.3.0</SelectItem>
                   <SelectItem value="@jhqcat/pong-v0.2.1">@jhqcat/pong-v0.2.1</SelectItem>
                   <Separator />
                   <SelectItem value="custom" disabled>Upload your own model</SelectItem>
