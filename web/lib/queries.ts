@@ -85,7 +85,7 @@ export async function setScore(player: Player, scorer: "player" | "model", score
     if (scorer === "player") player.playerScore = player.playerScore + scoreModifier
     if (scorer === "model") player.modelScore = player.modelScore + scoreModifier
 
-    return await db.update(players).set(
+    return db.update(players).set(
         scorer === "player" ? { playerScore: player.playerScore } : { modelScore: player.modelScore }
-    )
+    ).where(eq(players.id, player.id)).returning()
 }
