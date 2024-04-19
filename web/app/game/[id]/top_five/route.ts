@@ -7,7 +7,7 @@ export async function GET(
 ) {
 
     const data = await getTopFivePlayers(params.id)
-    const players = data.map((item, index) => ({ index, grading: (item.playerScore / (item.modelScore + item.playerScore)).toFixed(3), ...item }));
+    const players = data.map((item, index) => ({ ...item, index, grading: (item.playerScore / (item.modelScore + item.playerScore)).toFixed(3) }));
 
     return Response.json(players)
 }
