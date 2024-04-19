@@ -39,7 +39,7 @@ export function LeaderboardRanking({ id, initialPlayers }: {
                 <div className="text-sm font-semibold">{player.displayName}</div>
                 <div className="text-xs text-gray-500 dark:text-gray-400">{player.id}</div>
             </div>
-            <div className="ml-auto text-2xl font-semibold">{player.playerScore}:{player.modelScore} - {(player.playerScore/ (player.modelScore + player.playerScore)).toFixed(3)}</div>
+            <div className="ml-auto text-2xl font-semibold">{player.playerScore}:{player.modelScore} - {player.grading}</div>
         </div>
     ))
 }

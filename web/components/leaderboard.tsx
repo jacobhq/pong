@@ -15,7 +15,8 @@ import { LeaderboardRanking } from "./leaderboard-ranking";
 export async function Leaderboard({ id }: { id: string }) {
     const initialCount = await playerCount(id)
     const rawPlayers = await getTopFivePlayers(id)
-    const players = rawPlayers.map((item, index) => ({ index, ...item }));
+    const players = rawPlayers.map((item, index) => ({ ...item, index, grading: parseInt(item.playerScore / item.modelScore + item.playerScore.toFixed(3)) }));
+    players.sort((a,b) => a.grading - b.grading);
 
     return (
         <div className="flex flex-col items-center justify-center h-screen w-full space-y-4">
