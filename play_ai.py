@@ -7,10 +7,10 @@ import requests
 from main import test_ai
 from pong.types import JoinRes
 
-API_URL = "https://pong.jhqcat.com/ingest"
-GAME_ID = "[GAME ID]"
+API_URL = "http://localhost:3000/ingest"
+GAME_ID = "yttdif"
 INGEST_URL = f"{API_URL}/{GAME_ID}"
-DISPLAY_NAME = "[ENTER NAME]"
+DISPLAY_NAME = "6"
 
 local_dir = os.path.dirname(__file__)
 config_path = os.path.join(local_dir, "config.txt")

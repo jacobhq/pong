@@ -1,0 +1,7 @@
+onlyBuiltDependencies:
+  - '@vercel/speed-insights'
+  - bufferutil
+  - es5-ext
+  - esbuild
+  - unrs-resolver
+  - utf-8-validate
